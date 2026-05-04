@@ -45,6 +45,7 @@
     "(forms)/input-group",
     "(forms)/input-otp",
     "(typography)/kbd",
+    "(typography)/text",
     "(forms)/label",
     "(navigation)/link",
     "(collections)/list-box",
