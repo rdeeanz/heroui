@@ -56,7 +56,12 @@
 
     --muted: oklch(0.5517 0.0138 285.94);
 
-    --scrollbar: oklch(87.1% 0.006 286.286);
+    --scrollbar: var(--scrollbar-thumb);
+    --scrollbar-thumb: color-mix(in oklch, var(--foreground) 15%, transparent);
+    --scrollbar-track: transparent;
+    --scrollbar-gutter: auto;
+    --scrollbar-width: thin;
+    --scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
 
     --default: oklch(94% 0.001 286.375);
     --default-foreground: var(--eclipse);
@@ -187,7 +192,12 @@
 
     --muted: oklch(70.5% 0.015 286.067);
 
-    --scrollbar: oklch(70.5% 0.015 286.067);
+    --scrollbar: var(--scrollbar-thumb);
+    --scrollbar-thumb: color-mix(in oklch, var(--foreground) 15%, transparent);
+    --scrollbar-track: transparent;
+    --scrollbar-gutter: auto;
+    --scrollbar-width: thin;
+    --scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
 
     --default: oklch(27.4% 0.006 286.033);
     --default-foreground: var(--snow);
