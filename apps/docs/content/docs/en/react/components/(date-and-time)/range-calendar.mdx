@@ -260,6 +260,17 @@ RangeCalendar inherits all props from React Aria [RangeCalendar](https://react-s
 | `RangeCalendar.YearPickerGridBody` | Body renderer for year grid cells. |
 | `RangeCalendar.YearPickerCell` | Individual year option cell. |
 
+### Year Picker Parts
+
+Year picker subcomponents inherit formatting props from React Aria [`useCalendarHeading`](https://react-aria.adobe.com/useCalendar#usecalendarheading) and [`useCalendarYearPicker`](https://react-aria.adobe.com/useCalendar#usecalendaryearpicker).
+
+| Component | Prop | Type | Default | Description |
+|-----------|------|------|---------|-------------|
+| `RangeCalendar.YearPickerTriggerHeading` | `format` | `DateFormatterOptions` | - | Customize month/year label (e.g. `{month: 'short'}`). |
+| `RangeCalendar.YearPickerTriggerHeading` | `offset` | `{months?: number}` | - | Shift the heading relative to the focused date (multi-month layouts). |
+| `RangeCalendar.YearPickerGrid` | `format` | `DateFormatterOptions` | `{year: 'numeric'}` | Customize year cell labels (era, calendar system, etc.). |
+| `RangeCalendar.YearPickerGrid` | `visibleYears` | `number` | min–max span or `20` | Number of years shown in the sliding window. Defaults to the full range between `minValue` and `maxValue` when both are set. |
+
 ### RangeCalendar.Cell Render Props
 
 When `RangeCalendar.Cell` children is a function, React Aria render props are available:

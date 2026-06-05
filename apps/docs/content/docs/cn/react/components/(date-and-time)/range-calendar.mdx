@@ -260,6 +260,17 @@ RangeCalendar 继承 React Aria [RangeCalendar](https://react-spectrum.adobe.com
 | `RangeCalendar.YearPickerGridBody` | 年份网格单元格的 body 渲染器。 |
 | `RangeCalendar.YearPickerCell` | 单个年份选项单元格。 |
 
+### 年份选择器子组件
+
+年份选择器子组件继承 React Aria [`useCalendarHeading`](https://react-aria.adobe.com/useCalendar#usecalendarheading) 与 [`useCalendarYearPicker`](https://react-aria.adobe.com/useCalendar#usecalendaryearpicker) 的格式化属性。
+
+| 组件 | 属性 | 类型 | 默认值 | 描述 |
+|------|------|------|--------|------|
+| `RangeCalendar.YearPickerTriggerHeading` | `format` | `DateFormatterOptions` | - | 自定义月/年标题（如 `{month: 'short'}`）。 |
+| `RangeCalendar.YearPickerTriggerHeading` | `offset` | `{months?: number}` | - | 相对聚焦日期偏移标题（多月布局）。 |
+| `RangeCalendar.YearPickerGrid` | `format` | `DateFormatterOptions` | `{year: 'numeric'}` | 自定义年份单元格标签（纪元、历法系统等）。 |
+| `RangeCalendar.YearPickerGrid` | `visibleYears` | `number` | min–max 跨度或 `20` | 滑动窗口中显示的年份数量。当同时设置 `minValue` 与 `maxValue` 时，默认为二者之间的完整范围。 |
+
 ### RangeCalendar.Cell Render Props
 
 当 `RangeCalendar.Cell` 的 `children` 为函数时，可使用 React Aria 的渲染参数：

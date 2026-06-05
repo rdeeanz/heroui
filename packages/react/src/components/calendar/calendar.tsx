@@ -19,17 +19,13 @@ import {
   CalendarHeaderCell as CalendarHeaderCellPrimitive,
   CalendarHeading as CalendarHeadingPrimitive,
   Calendar as CalendarPrimitive,
-  CalendarStateContext,
 } from "react-aria-components/Calendar";
 import {useLocale} from "react-aria-components/I18nProvider";
 
 import {getGregorianYearOffset} from "../../utils/calendar";
 import {composeSlotClassName, composeTwRenderProps} from "../../utils/compose";
 import {dom} from "../../utils/dom";
-import {
-  YearPickerContext,
-  YearPickerStateContext,
-} from "../calendar-year-picker/year-picker-context";
+import {YearPickerContext} from "../calendar-year-picker/year-picker-context";
 import {IconChevronLeft, IconChevronRight} from "../icons";
 
 /* -------------------------------------------------------------------------------------------------
@@ -40,24 +36,6 @@ interface CalendarContext {
 }
 
 const CalendarContext = createContext<CalendarContext>({});
-
-const CalendarYearPickerStateBridge = ({children}: {children: React.ReactNode}) => {
-  const state = React.useContext(CalendarStateContext);
-
-  if (!state) {
-    throw new Error("Calendar year picker state must be used within <Calendar>.");
-  }
-
-  const yearPickerStateValue = {
-    focusedDate: state.focusedDate,
-    maxValue: state.maxValue,
-    minValue: state.minValue,
-    setFocusedDate: (value: DateValue) => state.setFocusedDate(value as typeof state.focusedDate),
-    timeZone: state.timeZone,
-  };
-
-  return <YearPickerStateContext value={yearPickerStateValue}>{children}</YearPickerStateContext>;
-};
 
 /* -------------------------------------------------------------------------------------------------
 | * Calendar Root
@@ -122,11 +100,7 @@ function CalendarRoot<T extends DateValue = DateValue>({
           {...rest}
           className={composeTwRenderProps(className, slots.base())}
         >
-          {(values) => (
-            <CalendarYearPickerStateBridge>
-              {typeof children === "function" ? children(values) : children}
-            </CalendarYearPickerStateBridge>
-          )}
+          {(values) => (typeof children === "function" ? children(values) : children)}
         </CalendarPrimitive>
       </CalendarContext>
     </YearPickerContext>
