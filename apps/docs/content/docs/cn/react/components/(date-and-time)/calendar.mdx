@@ -68,6 +68,18 @@ export default () => (
 
 <ComponentPreview name="calendar-unavailable-dates" />
 
+### 固定周数
+
+将 `weeksInMonth` 设为固定值（例如 `6`），可在月份切换时保持网格高度稳定。在非公历场景中请谨慎使用，与 `firstDayOfWeek` 类似。
+
+<ComponentPreview name="calendar-weeks-in-month" />
+
+### 多选
+
+设置 `selectionMode="multiple"` 以选择多个日期。此时 `value`、`defaultValue` 与 `onChange` 使用日期数组。
+
+<ComponentPreview name="calendar-multiple-selection" />
+
 ### 禁用
 
 <ComponentPreview name="calendar-disabled" />
@@ -207,19 +219,23 @@ Calendar 继承 React Aria [Calendar](https://react-spectrum.adobe.com/react-ari
 
 | Prop | 类型 | 默认值 | 描述 |
 |------|------|--------|------|
-| `value` | `DateValue \| null` | - | 受控的选中日期。 |
-| `defaultValue` | `DateValue \| null` | - | 初始选中日期（非受控）。 |
-| `onChange` | `(value: DateValue) => void` | - | 选中变化时调用。 |
+| `selectionMode` | `'single' \| 'multiple'` | `'single'` | 单选或多选日期。 |
+| `value` | `DateValue \| null` 或 `DateValue[] \| null` | - | 受控的选中日期。`selectionMode="multiple"` 时使用数组。 |
+| `defaultValue` | `DateValue \| null` 或 `DateValue[] \| null` | - | 初始选中日期（非受控）。 |
+| `onChange` | `(value: DateValue \| null)` 或 `(value: DateValue[] \| null) => void` | - | 选中变化时调用。 |
 | `focusedValue` | `DateValue` | - | 受控的焦点日期。 |
 | `onFocusChange` | `(value: DateValue) => void` | - | 焦点移动到其它日期时调用。 |
 | `minValue` | `DateValue` | 历法感知的 `1900-01-01` | 最早可选日期。 |
 | `maxValue` | `DateValue` | 历法感知的 `2099-12-31` | 最晚可选日期。 |
-| `isDateUnavailable` | `(date: DateValue) => boolean` | - | 将日期标记为不可用。 |
 | `weeksInMonth` | `number` | - | 一个月的周数。该值会覆盖区域设置的默认值。 |
+| `isDateUnavailable` | `(date: DateValue) => boolean` | - | 将日期标记为不可用。 |
+| `firstDayOfWeek` | `'sun' \| 'mon' \| 'tue' \| 'wed' \| 'thu' \| 'fri' \| 'sat'` | - | 覆盖区域设置的一周起始日。 |
+| `pageBehavior` | `'visible' \| 'single'` | `'visible'` | 翻页按可见范围或单步前进。 |
+| `selectionAlignment` | `'start' \| 'center' \| 'end'` | `'center'` | 初始渲染时按选中项对齐可见范围。 |
 | `isDisabled` | `boolean` | `false` | 禁用交互与选择。 |
 | `isReadOnly` | `boolean` | `false` | 内容只读，无法更改选中。 |
 | `isInvalid` | `boolean` | `false` | 将日历标记为无效以配合校验 UI。 |
-| `visibleDuration` | `{months?: number}` | `{months: 1}` | 可见月份数量。 |
+| `visibleDuration` | `{months?: number; weeks?: number; days?: number}` | `{months: 1}` | 可见时间范围。月份视图样式完整；周/日视图由上游支持，HeroUI 样式尚未针对优化。 |
 | `defaultYearPickerOpen` | `boolean` | `false` | 内置年份选择器的初始展开状态。 |
 | `isYearPickerOpen` | `boolean` | - | 受控的年份选择器展开状态。 |
 | `onYearPickerOpenChange` | `(isOpen: boolean) => void` | - | 年份选择器展开状态变化时调用。 |

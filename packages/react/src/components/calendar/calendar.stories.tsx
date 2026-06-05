@@ -28,6 +28,13 @@ const meta: Meta<typeof Calendar> = {
     isReadOnly: {
       control: "boolean",
     },
+    selectionMode: {
+      control: "select",
+      options: ["single", "multiple"],
+    },
+    weeksInMonth: {
+      control: {type: "number", min: 4, max: 6, step: 1},
+    },
   },
   component: Calendar,
   parameters: {
@@ -257,6 +264,38 @@ export const UnavailableDates: Story = {
           isDateUnavailable={isDateUnavailable}
         />
         <Description className="text-center">Weekends are unavailable</Description>
+      </div>
+    );
+  },
+};
+
+export const WeeksInMonth: Story = {
+  render: (args) => (
+    <div className="flex flex-col items-center gap-4">
+      <CalendarTemplate {...args} aria-label="Event date" weeksInMonth={6} />
+      <Description className="text-center">
+        Fixed to 6 weeks per month to avoid layout shift
+      </Description>
+    </div>
+  ),
+};
+
+export const MultipleSelection: Story = {
+  render: (args) => {
+    const [value, setValue] = useState<DateValue[] | null>([]);
+
+    return (
+      <div className="flex flex-col items-center gap-4">
+        <CalendarTemplate
+          {...args}
+          aria-label="Event dates"
+          selectionMode="multiple"
+          value={value}
+          onChange={setValue}
+        />
+        <Description className="text-center">
+          {value?.length ? `${value.length} date(s) selected` : "Select multiple dates"}
+        </Description>
       </div>
     );
   },

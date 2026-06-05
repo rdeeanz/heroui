@@ -400,6 +400,14 @@ export const demos: Record<string, DemoItem> = {
     component: CalendarDemos.UnavailableDates,
     file: "en/calendar/unavailable-dates.tsx",
   },
+  "calendar-weeks-in-month": {
+    component: CalendarDemos.WeeksInMonth,
+    file: "en/calendar/weeks-in-month.tsx",
+  },
+  "calendar-multiple-selection": {
+    component: CalendarDemos.MultipleSelection,
+    file: "en/calendar/multiple-selection.tsx",
+  },
   "calendar-disabled": {
     component: CalendarDemos.Disabled,
     file: "en/calendar/disabled.tsx",
@@ -460,6 +468,14 @@ export const demos: Record<string, DemoItem> = {
   "range-calendar-unavailable-dates": {
     component: RangeCalendarDemos.UnavailableDates,
     file: "en/range-calendar/unavailable-dates.tsx",
+  },
+  "range-calendar-anchor-unavailable-dates": {
+    component: RangeCalendarDemos.AnchorUnavailableDates,
+    file: "en/range-calendar/anchor-unavailable-dates.tsx",
+  },
+  "range-calendar-weeks-in-month": {
+    component: RangeCalendarDemos.WeeksInMonth,
+    file: "en/range-calendar/weeks-in-month.tsx",
   },
   "range-calendar-allows-non-contiguous-ranges": {
     component: RangeCalendarDemos.AllowsNonContiguousRanges,

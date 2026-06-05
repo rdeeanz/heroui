@@ -1,4 +1,5 @@
 export {AllowsNonContiguousRanges} from "./allows-non-contiguous-ranges";
+export {AnchorUnavailableDates} from "./anchor-unavailable-dates";
 export {Basic} from "./basic";
 export {BookingCalendar} from "./booking-calendar";
 export {Controlled} from "./controlled";
@@ -12,5 +13,6 @@ export {MultipleMonths} from "./multiple-months";
 export {ReadOnly} from "./read-only";
 export {ThreeMonths} from "./three-months";
 export {UnavailableDates} from "./unavailable-dates";
+export {WeeksInMonth} from "./weeks-in-month";
 export {WithIndicators} from "./with-indicators";
 export {YearPicker} from "./year-picker";

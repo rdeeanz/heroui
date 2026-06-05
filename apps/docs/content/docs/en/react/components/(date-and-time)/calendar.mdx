@@ -68,6 +68,18 @@ Use `isDateUnavailable` to block dates such as weekends, holidays, or booked slo
 
 <ComponentPreview name="calendar-unavailable-dates" />
 
+### Weeks in Month
+
+Set `weeksInMonth` to a fixed value (for example, `6`) to keep the grid height stable when navigating between months. Use with care in non-Gregorian locales, similar to `firstDayOfWeek`.
+
+<ComponentPreview name="calendar-weeks-in-month" />
+
+### Multiple Selection
+
+Set `selectionMode="multiple"` to let users select several dates. `value`, `defaultValue`, and `onChange` use an array of dates.
+
+<ComponentPreview name="calendar-multiple-selection" />
+
 ### Disabled
 
 <ComponentPreview name="calendar-disabled" />
@@ -207,19 +219,23 @@ Calendar inherits all props from React Aria [Calendar](https://react-spectrum.ad
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `value` | `DateValue \| null` | - | Controlled selected date. |
-| `defaultValue` | `DateValue \| null` | - | Initial selected date (uncontrolled). |
-| `onChange` | `(value: DateValue) => void` | - | Called when selection changes. |
+| `selectionMode` | `'single' \| 'multiple'` | `'single'` | Whether one or many dates can be selected. |
+| `value` | `DateValue \| null` or `DateValue[] \| null` | - | Controlled selected date(s). Use an array when `selectionMode` is `multiple`. |
+| `defaultValue` | `DateValue \| null` or `DateValue[] \| null` | - | Initial selected date(s) (uncontrolled). |
+| `onChange` | `(value: DateValue \| null)` or `(value: DateValue[] \| null) => void` | - | Called when selection changes. |
 | `focusedValue` | `DateValue` | - | Controlled focused date. |
 | `onFocusChange` | `(value: DateValue) => void` | - | Called when focus moves to another date. |
 | `minValue` | `DateValue` | Calendar-aware `1900-01-01` | Earliest selectable date. |
 | `maxValue` | `DateValue` | Calendar-aware `2099-12-31` | Latest selectable date. |
 | `weeksInMonth` | `number` | - | The number of weeks in a month. This overrides the default set by the locale. |
 | `isDateUnavailable` | `(date: DateValue) => boolean` | - | Marks dates as unavailable. |
+| `firstDayOfWeek` | `'sun' \| 'mon' \| 'tue' \| 'wed' \| 'thu' \| 'fri' \| 'sat'` | - | Overrides the locale default for the first day of the week. |
+| `pageBehavior` | `'visible' \| 'single'` | `'visible'` | Whether paging advances by the visible duration or one unit at a time. |
+| `selectionAlignment` | `'start' \| 'center' \| 'end'` | `'center'` | Aligns the visible range to the selection on initial render. |
 | `isDisabled` | `boolean` | `false` | Disables interaction and selection. |
 | `isReadOnly` | `boolean` | `false` | Keeps content readable but prevents selection changes. |
 | `isInvalid` | `boolean` | `false` | Marks the calendar as invalid for validation UI. |
-| `visibleDuration` | `{months?: number}` | `{months: 1}` | Number of visible months. |
+| `visibleDuration` | `{months?: number; weeks?: number; days?: number}` | `{months: 1}` | Visible time range. Month view is fully styled; week/day views are supported upstream but not optimized in HeroUI styles yet. |
 | `defaultYearPickerOpen` | `boolean` | `false` | Initial open state of internal year picker. |
 | `isYearPickerOpen` | `boolean` | - | Controlled year picker open state. |
 | `onYearPickerOpenChange` | `(isOpen: boolean) => void` | - | Called when year picker open state changes. |

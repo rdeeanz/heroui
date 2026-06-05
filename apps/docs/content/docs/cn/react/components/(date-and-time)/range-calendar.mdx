@@ -66,6 +66,18 @@ export default () => (
 
 <ComponentPreview name="range-calendar-unavailable-dates" />
 
+### 基于锚点的不可用日期
+
+选择范围时，`isDateUnavailable` 的第二个参数 `anchorDate` 为用户选中的开始日期。可据此限制结束日期（例如仅允许开始日期前后 7 天）。
+
+<ComponentPreview name="range-calendar-anchor-unavailable-dates" />
+
+### 固定周数
+
+将 `weeksInMonth` 设为固定值（例如 `6`），可在月份切换时保持网格高度稳定。
+
+<ComponentPreview name="range-calendar-weeks-in-month" />
+
 ### 允许非连续范围
 
 启用 `allowsNonContiguousRanges`，允许选择跨越不可用日期的范围。
@@ -215,12 +227,15 @@ RangeCalendar 继承 React Aria [RangeCalendar](https://react-spectrum.adobe.com
 | `minValue` | `DateValue` | 历法感知的 `1900-01-01` | 可选的最早日期。 |
 | `maxValue` | `DateValue` | 历法感知的 `2099-12-31` | 可选的最晚日期。 |
 | `weeksInMonth` | `number` | - | 一个月的周数。该值会覆盖区域设置的默认值。 |
-| `isDateUnavailable` | `(date: DateValue, anchorDate: CalendarDate \| null) => boolean` | - | 将日期标记为不可用。如果设置了 `anchorDate`，则会基于用户首次选中的日期来调整可用日期。 |
+| `isDateUnavailable` | `(date: DateValue, anchorDate: CalendarDate \| null) => boolean` | - | 将日期标记为不可用。`anchorDate` 为当前范围选择中的首个日期。 |
+| `firstDayOfWeek` | `'sun' \| 'mon' \| 'tue' \| 'wed' \| 'thu' \| 'fri' \| 'sat'` | - | 覆盖区域设置的一周起始日。 |
+| `pageBehavior` | `'visible' \| 'single'` | `'visible'` | 翻页按可见范围或单步前进。 |
+| `selectionAlignment` | `'start' \| 'center' \| 'end'` | `'center'` | 初始渲染时按选中项对齐可见范围。 |
 | `allowsNonContiguousRanges` | `boolean` | `false` | 允许范围跨越不可用日期。 |
 | `isDisabled` | `boolean` | `false` | 禁用交互与选择。 |
 | `isReadOnly` | `boolean` | `false` | 内容只读，不可更改选中。 |
 | `isInvalid` | `boolean` | `false` | 标记为无效以配合校验样式。 |
-| `visibleDuration` | `{months?: number}` | `{months: 1}` | 可见月份数量。 |
+| `visibleDuration` | `{months?: number; weeks?: number; days?: number}` | `{months: 1}` | 可见时间范围。月份视图样式完整；周/日视图由上游支持，HeroUI 样式尚未针对优化。 |
 | `defaultYearPickerOpen` | `boolean` | `false` | 内置年份选择器的初始展开状态。 |
 | `isYearPickerOpen` | `boolean` | - | 受控的年份选择器展开状态。 |
 | `onYearPickerOpenChange` | `(isOpen: boolean) => void` | - | 年份选择器展开状态变化时调用。 |

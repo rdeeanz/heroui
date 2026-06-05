@@ -66,6 +66,18 @@ Use `isDateUnavailable` to block dates such as weekends, holidays, or booked slo
 
 <ComponentPreview name="range-calendar-unavailable-dates" />
 
+### Anchor-Based Unavailable Dates
+
+When selecting a range, `isDateUnavailable` receives a second argument, `anchorDate`, set to the first selected date. Use it to limit which end dates are valid (for example, within 7 days of the start).
+
+<ComponentPreview name="range-calendar-anchor-unavailable-dates" />
+
+### Weeks in Month
+
+Set `weeksInMonth` to a fixed value (for example, `6`) to keep the grid height stable when navigating between months.
+
+<ComponentPreview name="range-calendar-weeks-in-month" />
+
 ### Allows Non-Contiguous Ranges
 
 Enable `allowsNonContiguousRanges` to allow selection across unavailable dates.
@@ -215,12 +227,15 @@ RangeCalendar inherits all props from React Aria [RangeCalendar](https://react-s
 | `minValue` | `DateValue` | Calendar-aware `1900-01-01` | Earliest selectable date. |
 | `maxValue` | `DateValue` | Calendar-aware `2099-12-31` | Latest selectable date. |
 | `weeksInMonth` | `number` | - | The number of weeks in a month. This overrides the default set by the locale. |
-| `isDateUnavailable` | `(date: DateValue, anchorDate: CalendarDate \| null) => boolean` | - | Marks dates as unavailable. If `archorDate` is set, it will be used to adjust the available dates based on the user's first selected date. |
+| `isDateUnavailable` | `(date: DateValue, anchorDate: CalendarDate \| null) => boolean` | - | Marks dates as unavailable. When `anchorDate` is set, it is the first date the user selected in the current range gesture. |
+| `firstDayOfWeek` | `'sun' \| 'mon' \| 'tue' \| 'wed' \| 'thu' \| 'fri' \| 'sat'` | - | Overrides the locale default for the first day of the week. |
+| `pageBehavior` | `'visible' \| 'single'` | `'visible'` | Whether paging advances by the visible duration or one unit at a time. |
+| `selectionAlignment` | `'start' \| 'center' \| 'end'` | `'center'` | Aligns the visible range to the selection on initial render. |
 | `allowsNonContiguousRanges` | `boolean` | `false` | Allows ranges that span unavailable dates. |
 | `isDisabled` | `boolean` | `false` | Disables interaction and selection. |
 | `isReadOnly` | `boolean` | `false` | Keeps content readable but prevents selection changes. |
 | `isInvalid` | `boolean` | `false` | Marks the calendar as invalid for validation UI. |
-| `visibleDuration` | `{months?: number}` | `{months: 1}` | Number of visible months. |
+| `visibleDuration` | `{months?: number; weeks?: number; days?: number}` | `{months: 1}` | Visible time range. Month view is fully styled; week/day views are supported upstream but not optimized in HeroUI styles yet. |
 | `defaultYearPickerOpen` | `boolean` | `false` | Initial open state of internal year picker. |
 | `isYearPickerOpen` | `boolean` | - | Controlled year picker open state. |
 | `onYearPickerOpenChange` | `(isOpen: boolean) => void` | - | Called when year picker open state changes. |

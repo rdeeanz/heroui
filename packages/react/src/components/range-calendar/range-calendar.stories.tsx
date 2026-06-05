@@ -1,4 +1,4 @@
-import type {DateValue} from "@internationalized/date";
+import type {CalendarDate, DateValue} from "@internationalized/date";
 import type {Meta, StoryObj} from "@storybook/react";
 
 import {
@@ -30,6 +30,9 @@ const meta: Meta<typeof RangeCalendar> = {
     },
     isReadOnly: {
       control: "boolean",
+    },
+    weeksInMonth: {
+      control: {type: "number", min: 4, max: 6, step: 1},
     },
   },
   component: RangeCalendar,
@@ -294,6 +297,41 @@ export const UnavailableDates: Story = {
           isDateUnavailable={isDateUnavailable}
         />
         <Description className="text-center">Some days are unavailable</Description>
+      </div>
+    );
+  },
+};
+
+export const WeeksInMonth: Story = {
+  render: (args) => (
+    <div className="flex flex-col items-center gap-4">
+      <RangeCalendarTemplate {...args} aria-label="Trip dates" weeksInMonth={6} />
+      <Description className="text-center">
+        Fixed to 6 weeks per month to avoid layout shift
+      </Description>
+    </div>
+  ),
+};
+
+export const AnchorUnavailableDates: Story = {
+  render: (args) => {
+    const now = today(getLocalTimeZone());
+
+    const isDateUnavailable = (date: DateValue, anchorDate: CalendarDate | null) => {
+      return anchorDate != null && Math.abs(date.compare(anchorDate)) > 7;
+    };
+
+    return (
+      <div className="flex flex-col items-center gap-4">
+        <RangeCalendarTemplate
+          {...args}
+          aria-label="Trip dates"
+          isDateUnavailable={isDateUnavailable}
+          minValue={now}
+        />
+        <Description className="text-center">
+          After selecting a start date, only dates within 7 days are available
+        </Description>
       </div>
     );
   },
