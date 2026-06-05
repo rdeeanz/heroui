@@ -66,6 +66,30 @@ export default () => (
 
 <ComponentPreview name="range-calendar-unavailable-dates" />
 
+### 基于锚点的不可用日期
+
+选择范围时，`isDateUnavailable` 的第二个参数 `anchorDate` 为用户选中的开始日期。可据此限制结束日期（例如仅允许开始日期前后 7 天）。
+
+<ComponentPreview name="range-calendar-anchor-unavailable-dates" />
+
+### 固定周数
+
+将 `weeksInMonth` 设为固定值（例如 `6`），可在月份切换时保持网格高度稳定。
+
+<ComponentPreview name="range-calendar-weeks-in-month" />
+
+### 周视图
+
+设置 `visibleDuration={{ weeks: n }}` 可一次显示一个或多个周。翻页会按可见周范围前进。显示多周时可配合 `pageBehavior="single"` 每次仅移动一周。
+
+<ComponentPreview name="range-calendar-week-view" />
+
+### 日视图
+
+设置 `visibleDuration={{ days: n }}` 可显示连续多天的滚动窗口。翻页会按可见天数范围前进。显示多天时配合 `pageBehavior="single"` 可每次仅移动一天。
+
+<ComponentPreview name="range-calendar-day-view" />
+
 ### 允许非连续范围
 
 启用 `allowsNonContiguousRanges`，允许选择跨越不可用日期的范围。
@@ -96,7 +120,7 @@ export default () => (
 
 ### 多个月份
 
-使用 `visibleDuration` 与 `offset` 渲染多个月份网格，适用于预订与规划场景。
+使用 `visibleDuration` 与 `offset` 渲染多个月份网格，适用于预订与规划场景。在各列头部为 `RangeCalendar.Heading` 设置 `offset`（例如 `offset={{ months: 1 }}`）以显示对应月份标题。
 
 <ComponentPreview name="range-calendar-multiple-months" />
 
@@ -215,12 +239,15 @@ RangeCalendar 继承 React Aria [RangeCalendar](https://react-spectrum.adobe.com
 | `minValue` | `DateValue` | 历法感知的 `1900-01-01` | 可选的最早日期。 |
 | `maxValue` | `DateValue` | 历法感知的 `2099-12-31` | 可选的最晚日期。 |
 | `weeksInMonth` | `number` | - | 一个月的周数。该值会覆盖区域设置的默认值。 |
-| `isDateUnavailable` | `(date: DateValue, anchorDate: CalendarDate \| null) => boolean` | - | 将日期标记为不可用。如果设置了 `anchorDate`，则会基于用户首次选中的日期来调整可用日期。 |
+| `isDateUnavailable` | `(date: DateValue, anchorDate: CalendarDate \| null) => boolean` | - | 将日期标记为不可用。`anchorDate` 为当前范围选择中的首个日期。 |
+| `firstDayOfWeek` | `'sun' \| 'mon' \| 'tue' \| 'wed' \| 'thu' \| 'fri' \| 'sat'` | - | 覆盖区域设置的一周起始日。 |
+| `pageBehavior` | `'visible' \| 'single'` | `'visible'` | 翻页按可见范围或单步前进。 |
+| `selectionAlignment` | `'start' \| 'center' \| 'end'` | `'center'` | 初始渲染时按选中项对齐可见范围。 |
 | `allowsNonContiguousRanges` | `boolean` | `false` | 允许范围跨越不可用日期。 |
 | `isDisabled` | `boolean` | `false` | 禁用交互与选择。 |
 | `isReadOnly` | `boolean` | `false` | 内容只读，不可更改选中。 |
 | `isInvalid` | `boolean` | `false` | 标记为无效以配合校验样式。 |
-| `visibleDuration` | `{months?: number}` | `{months: 1}` | 可见月份数量。 |
+| `visibleDuration` | `{months?: number; weeks?: number; days?: number}` | `{months: 1}` | 可见时间范围。使用 `{ months: n }` 为月视图，`{ weeks: n }` 为周视图，`{ days: n }` 为日视图。 |
 | `defaultYearPickerOpen` | `boolean` | `false` | 内置年份选择器的初始展开状态。 |
 | `isYearPickerOpen` | `boolean` | - | 受控的年份选择器展开状态。 |
 | `onYearPickerOpenChange` | `(isOpen: boolean) => void` | - | 年份选择器展开状态变化时调用。 |
@@ -230,7 +257,7 @@ RangeCalendar 继承 React Aria [RangeCalendar](https://react-spectrum.adobe.com
 | 组件 | 描述 |
 |-----------|-------------|
 | `RangeCalendar.Header` | 导航与标题的头部容器。 |
-| `RangeCalendar.Heading` | 当前月/年标题。 |
+| `RangeCalendar.Heading` | 可见范围的格式化标题。支持 `offset`（多月份布局）与 `format`（月/年/日格式选项）。 |
 | `RangeCalendar.NavButton` | 上一页/下一页导航（`slot="previous"` 或 `slot="next"`）。 |
 | `RangeCalendar.Grid` | 单个月的日期网格（多月份布局支持 `offset`）。 |
 | `RangeCalendar.GridHeader` | 星期标题容器。 |
@@ -244,6 +271,17 @@ RangeCalendar 继承 React Aria [RangeCalendar](https://react-spectrum.adobe.com
 | `RangeCalendar.YearPickerGrid` | 年份选择覆盖网格容器。 |
 | `RangeCalendar.YearPickerGridBody` | 年份网格单元格的 body 渲染器。 |
 | `RangeCalendar.YearPickerCell` | 单个年份选项单元格。 |
+
+### 年份选择器子组件
+
+年份选择器子组件继承 React Aria [`useCalendarHeading`](https://react-aria.adobe.com/useCalendar#usecalendarheading) 与 [`useCalendarYearPicker`](https://react-aria.adobe.com/useCalendar#usecalendaryearpicker) 的格式化属性。
+
+| 组件 | 属性 | 类型 | 默认值 | 描述 |
+|------|------|------|--------|------|
+| `RangeCalendar.YearPickerTriggerHeading` | `format` | `DateFormatterOptions` | - | 自定义月/年标题（如 `{month: 'short'}`）。 |
+| `RangeCalendar.YearPickerTriggerHeading` | `offset` | `{months?: number}` | - | 相对聚焦日期偏移标题（多月布局）。 |
+| `RangeCalendar.YearPickerGrid` | `format` | `DateFormatterOptions` | `{year: 'numeric'}` | 自定义年份单元格标签（纪元、历法系统等）。 |
+| `RangeCalendar.YearPickerGrid` | `visibleYears` | `number` | min–max 跨度或 `20` | 滑动窗口中显示的年份数量。当同时设置 `minValue` 与 `maxValue` 时，默认为二者之间的完整范围。 |
 
 ### RangeCalendar.Cell Render Props
 

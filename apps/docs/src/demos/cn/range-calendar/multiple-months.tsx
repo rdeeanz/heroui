@@ -1,37 +1,19 @@
 "use client";
 
 import {RangeCalendar} from "@heroui/react";
-import {getLocalTimeZone} from "@internationalized/date";
-import React from "react";
-import {RangeCalendarStateContext, useLocale} from "react-aria-components";
-
-function RangeCalendarMonthHeading({offset = 0}: {offset?: number}) {
-  const state = React.useContext(RangeCalendarStateContext)!;
-  const {locale} = useLocale();
-
-  const startDate = state.visibleRange.start;
-  const monthDate = startDate.add({months: offset});
-  const dateObj = monthDate.toDate(getLocalTimeZone());
-  const monthYear = new Intl.DateTimeFormat(locale, {month: "long", year: "numeric"}).format(
-    dateObj,
-  );
-
-  return <span className="text-sm font-medium">{monthYear}</span>;
-}
 
 export function MultipleMonths() {
   return (
     <RangeCalendar
       aria-label="行程日期"
-      className="@container-normal w-auto overflow-x-auto"
+      className="@container-normal w-full max-w-none overflow-x-auto"
       visibleDuration={{months: 2}}
     >
-      <RangeCalendar.Heading className="sr-only" />
-      <div className="flex w-max gap-8">
+      <div className="mx-auto flex w-max gap-8">
         <div className="w-64">
           <RangeCalendar.Header>
             <RangeCalendar.NavButton slot="previous" />
-            <RangeCalendarMonthHeading offset={0} />
+            <RangeCalendar.Heading className="flex-none" />
             <div className="size-6" />
           </RangeCalendar.Header>
           <RangeCalendar.Grid>
@@ -46,7 +28,7 @@ export function MultipleMonths() {
         <div className="w-64">
           <RangeCalendar.Header>
             <div className="size-6" />
-            <RangeCalendarMonthHeading offset={1} />
+            <RangeCalendar.Heading className="flex-none" offset={{months: 1}} />
             <RangeCalendar.NavButton slot="next" />
           </RangeCalendar.Header>
           <RangeCalendar.Grid offset={{months: 1}}>

@@ -68,6 +68,30 @@ Use `isDateUnavailable` to block dates such as weekends, holidays, or booked slo
 
 <ComponentPreview name="calendar-unavailable-dates" />
 
+### Weeks in Month
+
+Set `weeksInMonth` to a fixed value (for example, `6`) to keep the grid height stable when navigating between months. Use with care in non-Gregorian locales, similar to `firstDayOfWeek`.
+
+<ComponentPreview name="calendar-weeks-in-month" />
+
+### Week View
+
+Set `visibleDuration={{ weeks: n }}` to show one or more weeks at a time. Navigation advances by the visible week range. Use `pageBehavior="single"` to move one week at a time when showing multiple weeks.
+
+<ComponentPreview name="calendar-week-view" />
+
+### Day View
+
+Set `visibleDuration={{ days: n }}` to show a rolling window of consecutive days. Navigation advances by the visible day range. Use `pageBehavior="single"` to move one day at a time when showing multiple days.
+
+<ComponentPreview name="calendar-day-view" />
+
+### Multiple Selection
+
+Set `selectionMode="multiple"` to let users select several dates. `value`, `defaultValue`, and `onChange` use an array of dates.
+
+<ComponentPreview name="calendar-multiple-selection" />
+
 ### Disabled
 
 <ComponentPreview name="calendar-disabled" />
@@ -90,7 +114,7 @@ You can customize `Calendar.Cell` children and use `Calendar.CellIndicator` to d
 
 ### Multiple Months
 
-Render multiple grids with `visibleDuration` and `offset` for booking and planning experiences.
+Render multiple grids with `visibleDuration` and `offset` for booking and planning experiences. Use `Calendar.Heading` with an `offset` (for example, `offset={{ months: 1 }}`) in each column header to label that month.
 
 <ComponentPreview name="calendar-multiple-months" />
 
@@ -207,19 +231,23 @@ Calendar inherits all props from React Aria [Calendar](https://react-spectrum.ad
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `value` | `DateValue \| null` | - | Controlled selected date. |
-| `defaultValue` | `DateValue \| null` | - | Initial selected date (uncontrolled). |
-| `onChange` | `(value: DateValue) => void` | - | Called when selection changes. |
+| `selectionMode` | `'single' \| 'multiple'` | `'single'` | Whether one or many dates can be selected. |
+| `value` | `DateValue \| null` or `DateValue[] \| null` | - | Controlled selected date(s). Use an array when `selectionMode` is `multiple`. |
+| `defaultValue` | `DateValue \| null` or `DateValue[] \| null` | - | Initial selected date(s) (uncontrolled). |
+| `onChange` | `(value: DateValue \| null)` or `(value: DateValue[] \| null) => void` | - | Called when selection changes. |
 | `focusedValue` | `DateValue` | - | Controlled focused date. |
 | `onFocusChange` | `(value: DateValue) => void` | - | Called when focus moves to another date. |
 | `minValue` | `DateValue` | Calendar-aware `1900-01-01` | Earliest selectable date. |
 | `maxValue` | `DateValue` | Calendar-aware `2099-12-31` | Latest selectable date. |
 | `weeksInMonth` | `number` | - | The number of weeks in a month. This overrides the default set by the locale. |
 | `isDateUnavailable` | `(date: DateValue) => boolean` | - | Marks dates as unavailable. |
+| `firstDayOfWeek` | `'sun' \| 'mon' \| 'tue' \| 'wed' \| 'thu' \| 'fri' \| 'sat'` | - | Overrides the locale default for the first day of the week. |
+| `pageBehavior` | `'visible' \| 'single'` | `'visible'` | Whether paging advances by the visible duration or one unit at a time. |
+| `selectionAlignment` | `'start' \| 'center' \| 'end'` | `'center'` | Aligns the visible range to the selection on initial render. |
 | `isDisabled` | `boolean` | `false` | Disables interaction and selection. |
 | `isReadOnly` | `boolean` | `false` | Keeps content readable but prevents selection changes. |
 | `isInvalid` | `boolean` | `false` | Marks the calendar as invalid for validation UI. |
-| `visibleDuration` | `{months?: number}` | `{months: 1}` | Number of visible months. |
+| `visibleDuration` | `{months?: number; weeks?: number; days?: number}` | `{months: 1}` | Visible time range. Use `{ months: n }` for month view, `{ weeks: n }` for week view, or `{ days: n }` for day view. |
 | `defaultYearPickerOpen` | `boolean` | `false` | Initial open state of internal year picker. |
 | `isYearPickerOpen` | `boolean` | - | Controlled year picker open state. |
 | `onYearPickerOpenChange` | `(isOpen: boolean) => void` | - | Called when year picker open state changes. |
@@ -229,7 +257,7 @@ Calendar inherits all props from React Aria [Calendar](https://react-spectrum.ad
 | Component | Description |
 |-----------|-------------|
 | `Calendar.Header` | Header container for navigation and heading. |
-| `Calendar.Heading` | Current month/year heading. |
+| `Calendar.Heading` | Formatted heading for the visible range. Supports `offset` (for multi-month layouts) and `format` (month/year/day options). |
 | `Calendar.NavButton` | Previous/next navigation control (`slot=\"previous\"` or `slot=\"next\"`). |
 | `Calendar.Grid` | Day grid for one month (`offset` supported for multi-month layouts). |
 | `Calendar.GridHeader` | Weekday header container. |
@@ -243,6 +271,17 @@ Calendar inherits all props from React Aria [Calendar](https://react-spectrum.ad
 | `Calendar.YearPickerGrid` | Overlay year selection grid container. |
 | `Calendar.YearPickerGridBody` | Body renderer for year grid cells. |
 | `Calendar.YearPickerCell` | Individual year option cell. |
+
+### Year Picker Parts
+
+Year picker subcomponents inherit formatting props from React Aria [`useCalendarHeading`](https://react-aria.adobe.com/useCalendar#usecalendarheading) and [`useCalendarYearPicker`](https://react-aria.adobe.com/useCalendar#usecalendaryearpicker).
+
+| Component | Prop | Type | Default | Description |
+|-----------|------|------|---------|-------------|
+| `Calendar.YearPickerTriggerHeading` | `format` | `DateFormatterOptions` | - | Customize month/year label (e.g. `{month: 'short'}`). |
+| `Calendar.YearPickerTriggerHeading` | `offset` | `{months?: number}` | - | Shift the heading relative to the focused date (multi-month layouts). |
+| `Calendar.YearPickerGrid` | `format` | `DateFormatterOptions` | `{year: 'numeric'}` | Customize year cell labels (era, calendar system, etc.). |
+| `Calendar.YearPickerGrid` | `visibleYears` | `number` | min–max span or `20` | Number of years shown in the sliding window. Defaults to the full range between `minValue` and `maxValue` when both are set. |
 
 ### Calendar.Cell Render Props
 

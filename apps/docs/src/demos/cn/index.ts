@@ -406,6 +406,22 @@ export const demos: Record<string, DemoItem> = {
     component: CalendarDemos.UnavailableDates,
     file: "cn/calendar/unavailable-dates.tsx",
   },
+  "calendar-weeks-in-month": {
+    component: CalendarDemos.WeeksInMonth,
+    file: "cn/calendar/weeks-in-month.tsx",
+  },
+  "calendar-week-view": {
+    component: CalendarDemos.WeekView,
+    file: "cn/calendar/week-view.tsx",
+  },
+  "calendar-day-view": {
+    component: CalendarDemos.DayView,
+    file: "cn/calendar/day-view.tsx",
+  },
+  "calendar-multiple-selection": {
+    component: CalendarDemos.MultipleSelection,
+    file: "cn/calendar/multiple-selection.tsx",
+  },
   "calendar-disabled": {
     component: CalendarDemos.Disabled,
     file: "cn/calendar/disabled.tsx",
@@ -466,6 +482,22 @@ export const demos: Record<string, DemoItem> = {
   "range-calendar-unavailable-dates": {
     component: RangeCalendarDemos.UnavailableDates,
     file: "cn/range-calendar/unavailable-dates.tsx",
+  },
+  "range-calendar-anchor-unavailable-dates": {
+    component: RangeCalendarDemos.AnchorUnavailableDates,
+    file: "cn/range-calendar/anchor-unavailable-dates.tsx",
+  },
+  "range-calendar-weeks-in-month": {
+    component: RangeCalendarDemos.WeeksInMonth,
+    file: "cn/range-calendar/weeks-in-month.tsx",
+  },
+  "range-calendar-week-view": {
+    component: RangeCalendarDemos.WeekView,
+    file: "cn/range-calendar/week-view.tsx",
+  },
+  "range-calendar-day-view": {
+    component: RangeCalendarDemos.DayView,
+    file: "cn/range-calendar/day-view.tsx",
   },
   "range-calendar-allows-non-contiguous-ranges": {
     component: RangeCalendarDemos.AllowsNonContiguousRanges,
