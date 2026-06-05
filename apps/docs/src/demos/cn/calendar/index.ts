@@ -12,6 +12,7 @@ export {MultipleSelection} from "./multiple-selection";
 export {MultipleMonths} from "./multiple-months";
 export {WeeksInMonth} from "./weeks-in-month";
 export {WeekView} from "./week-view";
+export {DayView} from "./day-view";
 export {ReadOnly} from "./read-only";
 export {UnavailableDates} from "./unavailable-dates";
 export {WithIndicators} from "./with-indicators";

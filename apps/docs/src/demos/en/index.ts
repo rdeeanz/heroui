@@ -408,6 +408,10 @@ export const demos: Record<string, DemoItem> = {
     component: CalendarDemos.WeekView,
     file: "en/calendar/week-view.tsx",
   },
+  "calendar-day-view": {
+    component: CalendarDemos.DayView,
+    file: "en/calendar/day-view.tsx",
+  },
   "calendar-multiple-selection": {
     component: CalendarDemos.MultipleSelection,
     file: "en/calendar/multiple-selection.tsx",

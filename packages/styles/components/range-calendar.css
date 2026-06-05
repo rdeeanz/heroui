@@ -21,6 +21,43 @@
   }
 }
 
+/* Day view – visibleDuration={{ days: n }} */
+.range-calendar--day-view {
+  @apply w-auto max-w-none min-w-40;
+
+  .range-calendar__cell {
+    @apply aspect-auto min-h-10 min-w-10;
+  }
+
+  &[data-visible-days="1"] .range-calendar__grid {
+    grid-template-columns: repeat(1, 1fr);
+  }
+
+  &[data-visible-days="2"] .range-calendar__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  &[data-visible-days="3"] .range-calendar__grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  &[data-visible-days="4"] .range-calendar__grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  &[data-visible-days="5"] .range-calendar__grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+
+  &[data-visible-days="6"] .range-calendar__grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+
+  &[data-visible-days="7"] .range-calendar__grid {
+    grid-template-columns: repeat(7, 1fr);
+  }
+}
+
 /* -----------------------------------------------------------------------------
  * RangeCalendar Header
  * -------------------------------------------------------------------------- */

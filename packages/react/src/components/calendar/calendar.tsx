@@ -60,6 +60,8 @@ function CalendarRoot<T extends DateValue = DateValue>({
   ...rest
 }: CalendarRootProps<T>) {
   const isWeekView = visibleDuration?.weeks != null;
+  const isDayView = visibleDuration?.days != null;
+  const visibleDays = isDayView ? String(visibleDuration.days) : undefined;
   const {locale} = useLocale();
   const slots = React.useMemo(() => calendarVariants(), []);
   const calendarRef = React.useRef<HTMLDivElement>(null);
@@ -98,13 +100,18 @@ function CalendarRoot<T extends DateValue = DateValue>({
         <CalendarPrimitive
           ref={calendarRef}
           data-slot="calendar"
+          data-visible-days={visibleDays}
           maxValue={maxValue}
           minValue={minValue}
           visibleDuration={visibleDuration}
           {...rest}
           className={composeTwRenderProps(
             className,
-            cx(slots.base(), isWeekView && "calendar--week-view"),
+            cx(
+              slots.base(),
+              isWeekView && "calendar--week-view",
+              isDayView && "calendar--day-view",
+            ),
           )}
         >
           {(values) => (typeof children === "function" ? children(values) : children)}

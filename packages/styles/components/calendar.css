@@ -21,6 +21,43 @@
   }
 }
 
+/* Day view – visibleDuration={{ days: n }} */
+.calendar--day-view {
+  @apply w-auto max-w-none min-w-40;
+
+  .calendar__cell {
+    @apply aspect-auto min-h-10 min-w-10;
+  }
+
+  &[data-visible-days="1"] .calendar__grid {
+    grid-template-columns: repeat(1, 1fr);
+  }
+
+  &[data-visible-days="2"] .calendar__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  &[data-visible-days="3"] .calendar__grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  &[data-visible-days="4"] .calendar__grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  &[data-visible-days="5"] .calendar__grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+
+  &[data-visible-days="6"] .calendar__grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+
+  &[data-visible-days="7"] .calendar__grid {
+    grid-template-columns: repeat(7, 1fr);
+  }
+}
+
 /* -----------------------------------------------------------------------------
  * Calendar Header
  * -------------------------------------------------------------------------- */

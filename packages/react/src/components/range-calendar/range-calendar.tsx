@@ -61,6 +61,8 @@ function RangeCalendarRoot<T extends DateValue = DateValue>({
   ...rest
 }: RangeCalendarRootProps<T>) {
   const isWeekView = visibleDuration?.weeks != null;
+  const isDayView = visibleDuration?.days != null;
+  const visibleDays = isDayView ? String(visibleDuration.days) : undefined;
   const {locale} = useLocale();
   const slots = React.useMemo(() => rangeCalendarVariants(), []);
   const calendarRef = React.useRef<HTMLDivElement>(null);
@@ -99,13 +101,18 @@ function RangeCalendarRoot<T extends DateValue = DateValue>({
         <RangeCalendarPrimitive
           ref={calendarRef}
           data-slot="range-calendar"
+          data-visible-days={visibleDays}
           maxValue={maxValue}
           minValue={minValue}
           visibleDuration={visibleDuration}
           {...rest}
           className={composeTwRenderProps(
             className,
-            cx(slots.base(), isWeekView && "range-calendar--week-view"),
+            cx(
+              slots.base(),
+              isWeekView && "range-calendar--week-view",
+              isDayView && "range-calendar--day-view",
+            ),
           )}
         >
           {(values) => (typeof children === "function" ? children(values) : children)}

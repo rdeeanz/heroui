@@ -80,6 +80,12 @@ export default () => (
 
 <ComponentPreview name="calendar-week-view" />
 
+### 日视图
+
+设置 `visibleDuration={{ days: n }}` 可显示连续多天的滚动窗口。翻页会按可见天数范围前进。显示多天时配合 `pageBehavior="single"` 可每次仅移动一天。
+
+<ComponentPreview name="calendar-day-view" />
+
 ### 多选
 
 设置 `selectionMode="multiple"` 以选择多个日期。此时 `value`、`defaultValue` 与 `onChange` 使用日期数组。
@@ -241,7 +247,7 @@ Calendar 继承 React Aria [Calendar](https://react-spectrum.adobe.com/react-ari
 | `isDisabled` | `boolean` | `false` | 禁用交互与选择。 |
 | `isReadOnly` | `boolean` | `false` | 内容只读，无法更改选中。 |
 | `isInvalid` | `boolean` | `false` | 将日历标记为无效以配合校验 UI。 |
-| `visibleDuration` | `{months?: number; weeks?: number; days?: number}` | `{months: 1}` | 可见时间范围。使用 `{ weeks: n }` 为周视图，`{ months: n }` 为月视图。日视图由上游支持，HeroUI 样式尚未针对优化。 |
+| `visibleDuration` | `{months?: number; weeks?: number; days?: number}` | `{months: 1}` | 可见时间范围。使用 `{ months: n }` 为月视图，`{ weeks: n }` 为周视图，`{ days: n }` 为日视图。 |
 | `defaultYearPickerOpen` | `boolean` | `false` | 内置年份选择器的初始展开状态。 |
 | `isYearPickerOpen` | `boolean` | - | 受控的年份选择器展开状态。 |
 | `onYearPickerOpenChange` | `(isOpen: boolean) => void` | - | 年份选择器展开状态变化时调用。 |
