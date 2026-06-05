@@ -590,6 +590,110 @@ export const ThreeMonths: Story = {
   ),
 };
 
+const DAY_VIEW_DURATIONS = [1, 3, 5, 7, 8, 14, 21] as const;
+
+export const DayView: Story = {
+  render: (args) => {
+    const [days, setDays] = useState<(typeof DAY_VIEW_DURATIONS)[number]>(3);
+    const now = today(getLocalTimeZone());
+
+    return (
+      <div className="flex flex-col items-center gap-4">
+        <ButtonGroup className="max-w-full flex-wrap justify-center" variant="tertiary">
+          {DAY_VIEW_DURATIONS.map((duration) => (
+            <Button
+              key={duration}
+              size="sm"
+              variant={days === duration ? "primary" : "tertiary"}
+              onPress={() => setDays(duration)}
+            >
+              {duration}d
+            </Button>
+          ))}
+        </ButtonGroup>
+        <RangeCalendar
+          {...args}
+          aria-label="Day view range"
+          defaultValue={{end: now.add({days: days - 1}), start: now}}
+          visibleDuration={{days}}
+        >
+          <RangeCalendar.Header>
+            <RangeCalendar.NavButton slot="previous" />
+            <RangeCalendar.Heading />
+            <RangeCalendar.NavButton slot="next" />
+          </RangeCalendar.Header>
+          <RangeCalendar.Grid>
+            <RangeCalendar.GridHeader>
+              {(day) => <RangeCalendar.HeaderCell>{day}</RangeCalendar.HeaderCell>}
+            </RangeCalendar.GridHeader>
+            <RangeCalendar.GridBody>
+              {(date) => <RangeCalendar.Cell date={date} />}
+            </RangeCalendar.GridBody>
+          </RangeCalendar.Grid>
+        </RangeCalendar>
+        <Description className="text-center">
+          Showing {days} day{days === 1 ? "" : "s"} per page. Use prev/next to navigate.
+        </Description>
+      </div>
+    );
+  },
+};
+
+const WEEK_VIEW_DURATIONS = [1, 2, 3, 4, 5, 6, 8] as const;
+
+export const WeekView: Story = {
+  render: (args) => {
+    const [weeks, setWeeks] = useState<(typeof WEEK_VIEW_DURATIONS)[number]>(2);
+    const {locale} = useLocale();
+    const now = today(getLocalTimeZone());
+    const weekStart = startOfWeek(now, locale);
+
+    return (
+      <div className="flex flex-col items-center gap-4">
+        <ButtonGroup className="max-w-full flex-wrap justify-center" variant="tertiary">
+          {WEEK_VIEW_DURATIONS.map((duration) => (
+            <Button
+              key={duration}
+              size="sm"
+              variant={weeks === duration ? "primary" : "tertiary"}
+              onPress={() => setWeeks(duration)}
+            >
+              {duration}w
+            </Button>
+          ))}
+        </ButtonGroup>
+        <RangeCalendar
+          key={weeks}
+          {...args}
+          aria-label="Week view range"
+          visibleDuration={{weeks}}
+          defaultValue={{
+            end: weekStart.add({days: weeks * 7 - 1}),
+            start: weekStart,
+          }}
+        >
+          <RangeCalendar.Header>
+            <RangeCalendar.NavButton slot="previous" />
+            <RangeCalendar.Heading />
+            <RangeCalendar.NavButton slot="next" />
+          </RangeCalendar.Header>
+          <RangeCalendar.Grid>
+            <RangeCalendar.GridHeader>
+              {(day) => <RangeCalendar.HeaderCell>{day}</RangeCalendar.HeaderCell>}
+            </RangeCalendar.GridHeader>
+            <RangeCalendar.GridBody>
+              {(date) => <RangeCalendar.Cell date={date} />}
+            </RangeCalendar.GridBody>
+          </RangeCalendar.Grid>
+        </RangeCalendar>
+        <Description className="text-center">
+          Showing {weeks} week{weeks === 1 ? "" : "s"} per page. Use prev/next to navigate.
+        </Description>
+      </div>
+    );
+  },
+};
+
 export const InternationalCalendar: Story = {
   render: (args) => (
     <I18nProvider locale="hi-IN-u-ca-indian">

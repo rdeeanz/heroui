@@ -78,6 +78,18 @@ Set `weeksInMonth` to a fixed value (for example, `6`) to keep the grid height s
 
 <ComponentPreview name="range-calendar-weeks-in-month" />
 
+### Week View
+
+Set `visibleDuration={{ weeks: n }}` to show one or more weeks at a time. Navigation advances by the visible week range. Use `pageBehavior="single"` to move one week at a time when showing multiple weeks.
+
+<ComponentPreview name="range-calendar-week-view" />
+
+### Day View
+
+Set `visibleDuration={{ days: n }}` to show a rolling window of consecutive days. Navigation advances by the visible day range. Use `pageBehavior="single"` to move one day at a time when showing multiple days.
+
+<ComponentPreview name="range-calendar-day-view" />
+
 ### Allows Non-Contiguous Ranges
 
 Enable `allowsNonContiguousRanges` to allow selection across unavailable dates.

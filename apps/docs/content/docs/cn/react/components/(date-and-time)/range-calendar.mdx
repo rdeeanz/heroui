@@ -78,6 +78,18 @@ export default () => (
 
 <ComponentPreview name="range-calendar-weeks-in-month" />
 
+### 周视图
+
+设置 `visibleDuration={{ weeks: n }}` 可一次显示一个或多个周。翻页会按可见周范围前进。显示多周时可配合 `pageBehavior="single"` 每次仅移动一周。
+
+<ComponentPreview name="range-calendar-week-view" />
+
+### 日视图
+
+设置 `visibleDuration={{ days: n }}` 可显示连续多天的滚动窗口。翻页会按可见天数范围前进。显示多天时配合 `pageBehavior="single"` 可每次仅移动一天。
+
+<ComponentPreview name="range-calendar-day-view" />
+
 ### 允许非连续范围
 
 启用 `allowsNonContiguousRanges`，允许选择跨越不可用日期的范围。

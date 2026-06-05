@@ -491,6 +491,14 @@ export const demos: Record<string, DemoItem> = {
     component: RangeCalendarDemos.WeeksInMonth,
     file: "cn/range-calendar/weeks-in-month.tsx",
   },
+  "range-calendar-week-view": {
+    component: RangeCalendarDemos.WeekView,
+    file: "cn/range-calendar/week-view.tsx",
+  },
+  "range-calendar-day-view": {
+    component: RangeCalendarDemos.DayView,
+    file: "cn/range-calendar/day-view.tsx",
+  },
   "range-calendar-allows-non-contiguous-ranges": {
     component: RangeCalendarDemos.AllowsNonContiguousRanges,
     file: "cn/range-calendar/allows-non-contiguous-ranges.tsx",

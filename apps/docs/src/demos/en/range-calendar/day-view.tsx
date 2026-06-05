@@ -1,6 +1,6 @@
 "use client";
 
-import {Calendar, Label, ListBox, Select} from "@heroui/react";
+import {Label, ListBox, RangeCalendar, Select} from "@heroui/react";
 import {useState} from "react";
 
 const dayOptions = [
@@ -41,19 +41,21 @@ export function DayView() {
         </Select.Popover>
       </Select>
 
-      <Calendar aria-label="Day view" visibleDuration={{days}}>
-        <Calendar.Header>
-          <Calendar.Heading />
-          <Calendar.NavButton slot="previous" />
-          <Calendar.NavButton slot="next" />
-        </Calendar.Header>
-        <Calendar.Grid>
-          <Calendar.GridHeader>
-            {(day) => <Calendar.HeaderCell>{day}</Calendar.HeaderCell>}
-          </Calendar.GridHeader>
-          <Calendar.GridBody>{(date) => <Calendar.Cell date={date} />}</Calendar.GridBody>
-        </Calendar.Grid>
-      </Calendar>
+      <RangeCalendar key={days} aria-label="Trip dates" visibleDuration={{days}}>
+        <RangeCalendar.Header>
+          <RangeCalendar.Heading />
+          <RangeCalendar.NavButton slot="previous" />
+          <RangeCalendar.NavButton slot="next" />
+        </RangeCalendar.Header>
+        <RangeCalendar.Grid>
+          <RangeCalendar.GridHeader>
+            {(day) => <RangeCalendar.HeaderCell>{day}</RangeCalendar.HeaderCell>}
+          </RangeCalendar.GridHeader>
+          <RangeCalendar.GridBody>
+            {(date) => <RangeCalendar.Cell date={date} />}
+          </RangeCalendar.GridBody>
+        </RangeCalendar.Grid>
+      </RangeCalendar>
     </div>
   );
 }

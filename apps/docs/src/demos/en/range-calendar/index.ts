@@ -13,6 +13,8 @@ export {MultipleMonths} from "./multiple-months";
 export {ReadOnly} from "./read-only";
 export {ThreeMonths} from "./three-months";
 export {UnavailableDates} from "./unavailable-dates";
+export {DayView} from "./day-view";
+export {WeekView} from "./week-view";
 export {WeeksInMonth} from "./weeks-in-month";
 export {WithIndicators} from "./with-indicators";
 export {YearPicker} from "./year-picker";

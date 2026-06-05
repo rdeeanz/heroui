@@ -29,10 +29,22 @@ import {dom} from "../../utils/dom";
 import {YearPickerContext} from "../calendar-year-picker/year-picker-context";
 import {IconChevronLeft, IconChevronRight} from "../icons";
 
+import {CalendarDayViewGridBody} from "./calendar-day-view-grid-body";
+import {CalendarDayViewGridHeader} from "./calendar-day-view-grid-header";
+
 /* -------------------------------------------------------------------------------------------------
 | * Calendar Context
 | * -----------------------------------------------------------------------------------------------*/
+interface CalendarDayViewContext {
+  days: number;
+  firstDayOfWeek?: CalendarRootProps["firstDayOfWeek"];
+  timeZone: string;
+  visibleRange: {end: DateValue; start: DateValue};
+  weekdayStyle?: "narrow" | "short" | "long";
+}
+
 interface CalendarContext {
+  dayView?: CalendarDayViewContext;
   slots?: ReturnType<typeof calendarVariants>;
 }
 
@@ -52,6 +64,7 @@ function CalendarRoot<T extends DateValue = DateValue>({
   children,
   className,
   defaultYearPickerOpen: defaultYearPickerOpenProp = false,
+  firstDayOfWeek,
   isYearPickerOpen: isYearPickerOpenProp,
   maxValue: maxValueProp,
   minValue: minValueProp,
@@ -61,7 +74,7 @@ function CalendarRoot<T extends DateValue = DateValue>({
 }: CalendarRootProps<T>) {
   const isWeekView = visibleDuration?.weeks != null;
   const isDayView = visibleDuration?.days != null;
-  const visibleDays = isDayView ? String(visibleDuration.days) : undefined;
+  const visibleDays = visibleDuration?.days;
   const {locale} = useLocale();
   const slots = React.useMemo(() => calendarVariants(), []);
   const calendarRef = React.useRef<HTMLDivElement>(null);
@@ -96,27 +109,38 @@ function CalendarRoot<T extends DateValue = DateValue>({
         calendarRef,
       }}
     >
-      <CalendarContext value={{slots}}>
-        <CalendarPrimitive
-          ref={calendarRef}
-          data-slot="calendar"
-          data-visible-days={visibleDays}
-          maxValue={maxValue}
-          minValue={minValue}
-          visibleDuration={visibleDuration}
-          {...rest}
-          className={composeTwRenderProps(
-            className,
-            cx(
-              slots.base(),
-              isWeekView && "calendar--week-view",
-              isDayView && "calendar--day-view",
-            ),
-          )}
-        >
-          {(values) => (typeof children === "function" ? children(values) : children)}
-        </CalendarPrimitive>
-      </CalendarContext>
+      <CalendarPrimitive
+        ref={calendarRef}
+        data-slot="calendar"
+        firstDayOfWeek={firstDayOfWeek}
+        maxValue={maxValue}
+        minValue={minValue}
+        visibleDuration={visibleDuration}
+        {...rest}
+        className={composeTwRenderProps(
+          className,
+          cx(slots.base(), isWeekView && "calendar--week-view", isDayView && "calendar--day-view"),
+        )}
+      >
+        {(values) => (
+          <CalendarContext
+            value={{
+              dayView:
+                isDayView && visibleDays != null
+                  ? {
+                      days: visibleDays,
+                      firstDayOfWeek,
+                      timeZone: values.state.timeZone,
+                      visibleRange: values.state.visibleRange,
+                    }
+                  : undefined,
+              slots,
+            }}
+          >
+            {typeof children === "function" ? children(values) : children}
+          </CalendarContext>
+        )}
+      </CalendarPrimitive>
     </YearPickerContext>
   );
 }
@@ -218,17 +242,27 @@ const CalendarGrid = ({
   weekdayStyle = "short",
   ...props
 }: CalendarGridProps) => {
-  const {slots} = useContext(CalendarContext);
+  const calendarContext = useContext(CalendarContext);
+  const {dayView, slots} = calendarContext;
+  const contextValue = React.useMemo(
+    () => ({
+      ...calendarContext,
+      dayView: dayView ? {...dayView, weekdayStyle} : undefined,
+    }),
+    [calendarContext, dayView, weekdayStyle],
+  );
 
   return (
-    <CalendarGridPrimitive
-      data-slot="calendar-grid"
-      weekdayStyle={weekdayStyle}
-      {...props}
-      className={composeSlotClassName(slots?.grid, className)}
-    >
-      {children}
-    </CalendarGridPrimitive>
+    <CalendarContext value={contextValue}>
+      <CalendarGridPrimitive
+        data-slot="calendar-grid"
+        weekdayStyle={weekdayStyle}
+        {...props}
+        className={composeSlotClassName(slots?.grid, className)}
+      >
+        {children}
+      </CalendarGridPrimitive>
+    </CalendarContext>
   );
 };
 
@@ -241,15 +275,32 @@ interface CalendarGridHeaderProps extends ComponentPropsWithRef<
   typeof CalendarGridHeaderPrimitive
 > {}
 
-const CalendarGridHeader = ({className, ...props}: CalendarGridHeaderProps) => {
-  const {slots} = useContext(CalendarContext);
+const CalendarGridHeader = ({children, className, ...props}: CalendarGridHeaderProps) => {
+  const {dayView, slots} = useContext(CalendarContext);
+
+  if (dayView && dayView.days >= 7 && typeof children === "function") {
+    return (
+      <CalendarDayViewGridHeader
+        className={composeSlotClassName(slots?.gridHeader, className)}
+        data-slot="calendar-grid-header"
+        firstDayOfWeek={dayView.firstDayOfWeek}
+        timeZone={dayView.timeZone}
+        visibleRange={dayView.visibleRange}
+        weekdayStyle={dayView.weekdayStyle}
+      >
+        {children}
+      </CalendarDayViewGridHeader>
+    );
+  }
 
   return (
     <CalendarGridHeaderPrimitive
       data-slot="calendar-grid-header"
       {...props}
       className={composeSlotClassName(slots?.gridHeader, className)}
-    />
+    >
+      {children}
+    </CalendarGridHeaderPrimitive>
   );
 };
 
@@ -260,15 +311,30 @@ CalendarGridHeader.displayName = "HeroUI.Calendar.GridHeader";
 | * -----------------------------------------------------------------------------------------------*/
 interface CalendarGridBodyProps extends ComponentPropsWithRef<typeof CalendarGridBodyPrimitive> {}
 
-const CalendarGridBody = ({className, ...props}: CalendarGridBodyProps) => {
-  const {slots} = useContext(CalendarContext);
+const CalendarGridBody = ({children, className, ...props}: CalendarGridBodyProps) => {
+  const {dayView, slots} = useContext(CalendarContext);
+
+  if (dayView && dayView.days >= 7 && typeof children === "function") {
+    return (
+      <CalendarDayViewGridBody
+        className={composeSlotClassName(slots?.gridBody, className)}
+        data-slot="calendar-grid-body"
+        firstDayOfWeek={dayView.firstDayOfWeek}
+        visibleRange={dayView.visibleRange}
+      >
+        {children}
+      </CalendarDayViewGridBody>
+    );
+  }
 
   return (
     <CalendarGridBodyPrimitive
       data-slot="calendar-grid-body"
       {...props}
       className={composeSlotClassName(slots?.gridBody, className)}
-    />
+    >
+      {children}
+    </CalendarGridBodyPrimitive>
   );
 };
 

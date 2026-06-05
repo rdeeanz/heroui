@@ -27,13 +27,24 @@ import {dataAttr} from "../../utils/assertion";
 import {getGregorianYearOffset} from "../../utils/calendar";
 import {composeSlotClassName, composeTwRenderProps} from "../../utils/compose";
 import {dom} from "../../utils/dom";
+import {CalendarDayViewGridBody} from "../calendar/calendar-day-view-grid-body";
+import {CalendarDayViewGridHeader} from "../calendar/calendar-day-view-grid-header";
 import {YearPickerContext} from "../calendar-year-picker/year-picker-context";
 import {IconChevronLeft, IconChevronRight} from "../icons";
 
 /* -------------------------------------------------------------------------------------------------
 | * RangeCalendar Context
 | * -----------------------------------------------------------------------------------------------*/
+interface RangeCalendarDayViewContext {
+  days: number;
+  firstDayOfWeek?: RangeCalendarRootProps["firstDayOfWeek"];
+  timeZone: string;
+  visibleRange: {end: DateValue; start: DateValue};
+  weekdayStyle?: "narrow" | "short" | "long";
+}
+
 interface RangeCalendarContext {
+  dayView?: RangeCalendarDayViewContext;
   slots?: ReturnType<typeof rangeCalendarVariants>;
 }
 
@@ -53,6 +64,7 @@ function RangeCalendarRoot<T extends DateValue = DateValue>({
   children,
   className,
   defaultYearPickerOpen: defaultYearPickerOpenProp = false,
+  firstDayOfWeek,
   isYearPickerOpen: isYearPickerOpenProp,
   maxValue: maxValueProp,
   minValue: minValueProp,
@@ -62,7 +74,7 @@ function RangeCalendarRoot<T extends DateValue = DateValue>({
 }: RangeCalendarRootProps<T>) {
   const isWeekView = visibleDuration?.weeks != null;
   const isDayView = visibleDuration?.days != null;
-  const visibleDays = isDayView ? String(visibleDuration.days) : undefined;
+  const visibleDays = visibleDuration?.days;
   const {locale} = useLocale();
   const slots = React.useMemo(() => rangeCalendarVariants(), []);
   const calendarRef = React.useRef<HTMLDivElement>(null);
@@ -97,27 +109,42 @@ function RangeCalendarRoot<T extends DateValue = DateValue>({
         calendarRef,
       }}
     >
-      <RangeCalendarContext value={{slots}}>
-        <RangeCalendarPrimitive
-          ref={calendarRef}
-          data-slot="range-calendar"
-          data-visible-days={visibleDays}
-          maxValue={maxValue}
-          minValue={minValue}
-          visibleDuration={visibleDuration}
-          {...rest}
-          className={composeTwRenderProps(
-            className,
-            cx(
-              slots.base(),
-              isWeekView && "range-calendar--week-view",
-              isDayView && "range-calendar--day-view",
-            ),
-          )}
-        >
-          {(values) => (typeof children === "function" ? children(values) : children)}
-        </RangeCalendarPrimitive>
-      </RangeCalendarContext>
+      <RangeCalendarPrimitive
+        ref={calendarRef}
+        data-slot="range-calendar"
+        firstDayOfWeek={firstDayOfWeek}
+        maxValue={maxValue}
+        minValue={minValue}
+        visibleDuration={visibleDuration}
+        {...rest}
+        className={composeTwRenderProps(
+          className,
+          cx(
+            slots.base(),
+            isWeekView && "range-calendar--week-view",
+            isDayView && "range-calendar--day-view",
+          ),
+        )}
+      >
+        {(values) => (
+          <RangeCalendarContext
+            value={{
+              dayView:
+                isDayView && visibleDays != null
+                  ? {
+                      days: visibleDays,
+                      firstDayOfWeek,
+                      timeZone: values.state.timeZone,
+                      visibleRange: values.state.visibleRange,
+                    }
+                  : undefined,
+              slots,
+            }}
+          >
+            {typeof children === "function" ? children(values) : children}
+          </RangeCalendarContext>
+        )}
+      </RangeCalendarPrimitive>
     </YearPickerContext>
   );
 }
@@ -227,17 +254,27 @@ const RangeCalendarGrid = ({
   weekdayStyle = "short",
   ...props
 }: RangeCalendarGridProps) => {
-  const {slots} = useContext(RangeCalendarContext);
+  const rangeCalendarContext = useContext(RangeCalendarContext);
+  const {dayView, slots} = rangeCalendarContext;
+  const contextValue = React.useMemo(
+    () => ({
+      ...rangeCalendarContext,
+      dayView: dayView ? {...dayView, weekdayStyle} : undefined,
+    }),
+    [dayView, rangeCalendarContext, weekdayStyle],
+  );
 
   return (
-    <CalendarGridPrimitive
-      data-slot="range-calendar-grid"
-      weekdayStyle={weekdayStyle}
-      {...props}
-      className={composeSlotClassName(slots?.grid, className)}
-    >
-      {children}
-    </CalendarGridPrimitive>
+    <RangeCalendarContext value={contextValue}>
+      <CalendarGridPrimitive
+        data-slot="range-calendar-grid"
+        weekdayStyle={weekdayStyle}
+        {...props}
+        className={composeSlotClassName(slots?.grid, className)}
+      >
+        {children}
+      </CalendarGridPrimitive>
+    </RangeCalendarContext>
   );
 };
 
@@ -250,15 +287,32 @@ interface RangeCalendarGridHeaderProps extends ComponentPropsWithRef<
   typeof CalendarGridHeaderPrimitive
 > {}
 
-const RangeCalendarGridHeader = ({className, ...props}: RangeCalendarGridHeaderProps) => {
-  const {slots} = useContext(RangeCalendarContext);
+const RangeCalendarGridHeader = ({children, className, ...props}: RangeCalendarGridHeaderProps) => {
+  const {dayView, slots} = useContext(RangeCalendarContext);
+
+  if (dayView && dayView.days >= 7 && typeof children === "function") {
+    return (
+      <CalendarDayViewGridHeader
+        className={composeSlotClassName(slots?.gridHeader, className)}
+        data-slot="range-calendar-grid-header"
+        firstDayOfWeek={dayView.firstDayOfWeek}
+        timeZone={dayView.timeZone}
+        visibleRange={dayView.visibleRange}
+        weekdayStyle={dayView.weekdayStyle}
+      >
+        {children}
+      </CalendarDayViewGridHeader>
+    );
+  }
 
   return (
     <CalendarGridHeaderPrimitive
       data-slot="range-calendar-grid-header"
       {...props}
       className={composeSlotClassName(slots?.gridHeader, className)}
-    />
+    >
+      {children}
+    </CalendarGridHeaderPrimitive>
   );
 };
 
@@ -271,15 +325,30 @@ interface RangeCalendarGridBodyProps extends ComponentPropsWithRef<
   typeof CalendarGridBodyPrimitive
 > {}
 
-const RangeCalendarGridBody = ({className, ...props}: RangeCalendarGridBodyProps) => {
-  const {slots} = useContext(RangeCalendarContext);
+const RangeCalendarGridBody = ({children, className, ...props}: RangeCalendarGridBodyProps) => {
+  const {dayView, slots} = useContext(RangeCalendarContext);
+
+  if (dayView && dayView.days >= 7 && typeof children === "function") {
+    return (
+      <CalendarDayViewGridBody
+        className={composeSlotClassName(slots?.gridBody, className)}
+        data-slot="range-calendar-grid-body"
+        firstDayOfWeek={dayView.firstDayOfWeek}
+        visibleRange={dayView.visibleRange}
+      >
+        {children}
+      </CalendarDayViewGridBody>
+    );
+  }
 
   return (
     <CalendarGridBodyPrimitive
       data-slot="range-calendar-grid-body"
       {...props}
       className={composeSlotClassName(slots?.gridBody, className)}
-    />
+    >
+      {children}
+    </CalendarGridBodyPrimitive>
   );
 };
 
