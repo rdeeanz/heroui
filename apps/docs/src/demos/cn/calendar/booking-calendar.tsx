@@ -1,6 +1,6 @@
 "use client";
 
-import type {DateValue} from "@internationalized/date";
+import type {CalendarDate, DateValue} from "@internationalized/date";
 
 import {Button, Calendar} from "@heroui/react";
 import {getLocalTimeZone, isWeekend, today} from "@internationalized/date";
@@ -8,7 +8,7 @@ import {useState} from "react";
 import {useLocale} from "react-aria-components";
 
 export function BookingCalendar() {
-  const [selectedDate, setSelectedDate] = useState<DateValue | null>(null);
+  const [selectedDate, setSelectedDate] = useState<CalendarDate | null>(null);
   const {locale} = useLocale();
 
   const bookedDates = [5, 6, 12, 13, 14, 20];

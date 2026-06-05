@@ -1,6 +1,6 @@
 "use client";
 
-import type {DateValue} from "@internationalized/date";
+import type {CalendarDate} from "@internationalized/date";
 
 import {Button, ButtonGroup, Calendar, Description} from "@heroui/react";
 import {
@@ -14,8 +14,8 @@ import {useState} from "react";
 import {useLocale} from "react-aria-components";
 
 export function Controlled() {
-  const [value, setValue] = useState<DateValue | null>(null);
-  const [focusedDate, setFocusedDate] = useState<DateValue>(parseDate("2025-12-25"));
+  const [value, setValue] = useState<CalendarDate | null>(null);
+  const [focusedDate, setFocusedDate] = useState<CalendarDate>(parseDate("2025-12-25"));
   const {locale} = useLocale();
 
   return (
