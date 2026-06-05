@@ -74,6 +74,12 @@ Set `weeksInMonth` to a fixed value (for example, `6`) to keep the grid height s
 
 <ComponentPreview name="calendar-weeks-in-month" />
 
+### Week View
+
+Set `visibleDuration={{ weeks: n }}` to show one or more weeks at a time. Navigation advances by the visible week range. Use `pageBehavior="single"` to move one week at a time when showing multiple weeks.
+
+<ComponentPreview name="calendar-week-view" />
+
 ### Multiple Selection
 
 Set `selectionMode="multiple"` to let users select several dates. `value`, `defaultValue`, and `onChange` use an array of dates.
@@ -235,7 +241,7 @@ Calendar inherits all props from React Aria [Calendar](https://react-spectrum.ad
 | `isDisabled` | `boolean` | `false` | Disables interaction and selection. |
 | `isReadOnly` | `boolean` | `false` | Keeps content readable but prevents selection changes. |
 | `isInvalid` | `boolean` | `false` | Marks the calendar as invalid for validation UI. |
-| `visibleDuration` | `{months?: number; weeks?: number; days?: number}` | `{months: 1}` | Visible time range. Month view is fully styled; week/day views are supported upstream but not optimized in HeroUI styles yet. |
+| `visibleDuration` | `{months?: number; weeks?: number; days?: number}` | `{months: 1}` | Visible time range. Use `{ weeks: n }` for week view or `{ months: n }` for month view. Day view is supported upstream but not optimized in HeroUI styles yet. |
 | `defaultYearPickerOpen` | `boolean` | `false` | Initial open state of internal year picker. |
 | `isYearPickerOpen` | `boolean` | - | Controlled year picker open state. |
 | `onYearPickerOpenChange` | `(isOpen: boolean) => void` | - | Called when year picker open state changes. |

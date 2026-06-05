@@ -235,7 +235,7 @@ RangeCalendar inherits all props from React Aria [RangeCalendar](https://react-s
 | `isDisabled` | `boolean` | `false` | Disables interaction and selection. |
 | `isReadOnly` | `boolean` | `false` | Keeps content readable but prevents selection changes. |
 | `isInvalid` | `boolean` | `false` | Marks the calendar as invalid for validation UI. |
-| `visibleDuration` | `{months?: number; weeks?: number; days?: number}` | `{months: 1}` | Visible time range. Month view is fully styled; week/day views are supported upstream but not optimized in HeroUI styles yet. |
+| `visibleDuration` | `{months?: number; weeks?: number; days?: number}` | `{months: 1}` | Visible time range. Use `{ weeks: n }` for week view or `{ months: n }` for month view. Day view is supported upstream but not optimized in HeroUI styles yet. |
 | `defaultYearPickerOpen` | `boolean` | `false` | Initial open state of internal year picker. |
 | `isYearPickerOpen` | `boolean` | - | Controlled year picker open state. |
 | `onYearPickerOpenChange` | `(isOpen: boolean) => void` | - | Called when year picker open state changes. |

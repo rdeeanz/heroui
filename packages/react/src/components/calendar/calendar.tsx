@@ -21,6 +21,7 @@ import {
   Calendar as CalendarPrimitive,
 } from "react-aria-components/Calendar";
 import {useLocale} from "react-aria-components/I18nProvider";
+import {cx} from "tailwind-variants";
 
 import {getGregorianYearOffset} from "../../utils/calendar";
 import {composeSlotClassName, composeTwRenderProps} from "../../utils/compose";
@@ -55,8 +56,10 @@ function CalendarRoot<T extends DateValue = DateValue>({
   maxValue: maxValueProp,
   minValue: minValueProp,
   onYearPickerOpenChange: onYearPickerOpenChangeProp,
+  visibleDuration,
   ...rest
 }: CalendarRootProps<T>) {
+  const isWeekView = visibleDuration?.weeks != null;
   const {locale} = useLocale();
   const slots = React.useMemo(() => calendarVariants(), []);
   const calendarRef = React.useRef<HTMLDivElement>(null);
@@ -97,8 +100,12 @@ function CalendarRoot<T extends DateValue = DateValue>({
           data-slot="calendar"
           maxValue={maxValue}
           minValue={minValue}
+          visibleDuration={visibleDuration}
           {...rest}
-          className={composeTwRenderProps(className, slots.base())}
+          className={composeTwRenderProps(
+            className,
+            cx(slots.base(), isWeekView && "calendar--week-view"),
+          )}
         >
           {(values) => (typeof children === "function" ? children(values) : children)}
         </CalendarPrimitive>

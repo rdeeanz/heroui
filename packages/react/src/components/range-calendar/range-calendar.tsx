@@ -21,6 +21,7 @@ import {
   CalendarHeading as CalendarHeadingPrimitive,
   RangeCalendar as RangeCalendarPrimitive,
 } from "react-aria-components/RangeCalendar";
+import {cx} from "tailwind-variants";
 
 import {dataAttr} from "../../utils/assertion";
 import {getGregorianYearOffset} from "../../utils/calendar";
@@ -56,8 +57,10 @@ function RangeCalendarRoot<T extends DateValue = DateValue>({
   maxValue: maxValueProp,
   minValue: minValueProp,
   onYearPickerOpenChange: onYearPickerOpenChangeProp,
+  visibleDuration,
   ...rest
 }: RangeCalendarRootProps<T>) {
+  const isWeekView = visibleDuration?.weeks != null;
   const {locale} = useLocale();
   const slots = React.useMemo(() => rangeCalendarVariants(), []);
   const calendarRef = React.useRef<HTMLDivElement>(null);
@@ -98,8 +101,12 @@ function RangeCalendarRoot<T extends DateValue = DateValue>({
           data-slot="range-calendar"
           maxValue={maxValue}
           minValue={minValue}
+          visibleDuration={visibleDuration}
           {...rest}
-          className={composeTwRenderProps(className, slots.base())}
+          className={composeTwRenderProps(
+            className,
+            cx(slots.base(), isWeekView && "range-calendar--week-view"),
+          )}
         >
           {(values) => (typeof children === "function" ? children(values) : children)}
         </RangeCalendarPrimitive>

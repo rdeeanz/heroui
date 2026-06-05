@@ -14,6 +14,13 @@
   container-type: inline-size;
 }
 
+/* Week view – visibleDuration={{ weeks: n }} */
+.calendar--week-view {
+  .calendar__cell {
+    @apply aspect-auto min-h-10;
+  }
+}
+
 /* -----------------------------------------------------------------------------
  * Calendar Header
  * -------------------------------------------------------------------------- */

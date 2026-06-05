@@ -235,7 +235,7 @@ RangeCalendar 继承 React Aria [RangeCalendar](https://react-spectrum.adobe.com
 | `isDisabled` | `boolean` | `false` | 禁用交互与选择。 |
 | `isReadOnly` | `boolean` | `false` | 内容只读，不可更改选中。 |
 | `isInvalid` | `boolean` | `false` | 标记为无效以配合校验样式。 |
-| `visibleDuration` | `{months?: number; weeks?: number; days?: number}` | `{months: 1}` | 可见时间范围。月份视图样式完整；周/日视图由上游支持，HeroUI 样式尚未针对优化。 |
+| `visibleDuration` | `{months?: number; weeks?: number; days?: number}` | `{months: 1}` | 可见时间范围。使用 `{ weeks: n }` 为周视图，`{ months: n }` 为月视图。日视图由上游支持，HeroUI 样式尚未针对优化。 |
 | `defaultYearPickerOpen` | `boolean` | `false` | 内置年份选择器的初始展开状态。 |
 | `isYearPickerOpen` | `boolean` | - | 受控的年份选择器展开状态。 |
 | `onYearPickerOpenChange` | `(isOpen: boolean) => void` | - | 年份选择器展开状态变化时调用。 |

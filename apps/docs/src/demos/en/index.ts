@@ -404,6 +404,10 @@ export const demos: Record<string, DemoItem> = {
     component: CalendarDemos.WeeksInMonth,
     file: "en/calendar/weeks-in-month.tsx",
   },
+  "calendar-week-view": {
+    component: CalendarDemos.WeekView,
+    file: "en/calendar/week-view.tsx",
+  },
   "calendar-multiple-selection": {
     component: CalendarDemos.MultipleSelection,
     file: "en/calendar/multiple-selection.tsx",
