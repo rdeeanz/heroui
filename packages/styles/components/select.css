@@ -103,6 +103,11 @@
   &:focus,
   &[data-focus="true"] {
   }
+
+  .select[data-invalid="true"] &,
+  .select[aria-invalid="true"] & {
+    background-color: var(--select-trigger-bg-focus);
+  }
 }
 
 .select__value {

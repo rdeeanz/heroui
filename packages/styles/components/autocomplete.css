@@ -93,6 +93,11 @@
   &:focus,
   &[data-focus="true"] {
   }
+
+  .autocomplete[data-invalid="true"] &,
+  .autocomplete[aria-invalid="true"] & {
+    background-color: var(--autocomplete-trigger-bg-focus);
+  }
 }
 
 .autocomplete__value {
