@@ -15,19 +15,8 @@ import {
 
 import {useCSSVariable} from "../../hooks/use-css-variable";
 import {composeSlotClassName, composeTwRenderProps} from "../../utils/compose";
+import {parseCSSTime} from "../../utils/css";
 import {dom} from "../../utils/dom";
-
-const parseCSSDelay = (value: string | undefined): number | undefined => {
-  if (!value) return undefined;
-  const trimmed = value.trim();
-  const val = parseFloat(trimmed);
-
-  if (Number.isNaN(val)) return undefined;
-  if (trimmed.endsWith("ms")) return val;
-  if (trimmed.endsWith("s")) return val * 1000;
-
-  return val;
-};
 
 /* -------------------------------------------------------------------------------------------------
  * Tooltip Context
@@ -54,8 +43,8 @@ const TooltipRoot = ({
   const cssDelay = useCSSVariable("--tooltip-delay");
   const cssCloseDelay = useCSSVariable("--tooltip-close-delay");
 
-  const resolvedDelay = delay ?? parseCSSDelay(cssDelay);
-  const resolvedCloseDelay = closeDelay ?? parseCSSDelay(cssCloseDelay);
+  const resolvedDelay = delay ?? parseCSSTime(cssDelay);
+  const resolvedCloseDelay = closeDelay ?? parseCSSTime(cssCloseDelay);
 
   return (
     <TooltipContext value={{slots}}>
