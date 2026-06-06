@@ -15,31 +15,31 @@ export function Uncontrolled() {
       >
         <Label>订阅套餐</Label>
         <Radio value="starter">
-          <Radio.Control>
-            <Radio.Indicator />
-          </Radio.Control>
           <Radio.Content>
-            <Label>入门版</Label>
-            <Description>适合副项目和小型团队</Description>
+            <Radio.Control>
+              <Radio.Indicator />
+            </Radio.Control>
+            入门版
           </Radio.Content>
+          <Description>适合副项目和小型团队</Description>
         </Radio>
         <Radio value="pro">
-          <Radio.Control>
-            <Radio.Indicator />
-          </Radio.Control>
           <Radio.Content>
-            <Label>专业版</Label>
-            <Description>高级报表与分析</Description>
+            <Radio.Control>
+              <Radio.Indicator />
+            </Radio.Control>
+            专业版
           </Radio.Content>
+          <Description>高级报表与分析</Description>
         </Radio>
         <Radio value="teams">
-          <Radio.Control>
-            <Radio.Indicator />
-          </Radio.Control>
           <Radio.Content>
-            <Label>团队版</Label>
-            <Description>最多可与 10 名队友共享访问权限</Description>
+            <Radio.Control>
+              <Radio.Indicator />
+            </Radio.Control>
+            团队版
           </Radio.Content>
+          <Description>最多可与 10 名队友共享访问权限</Description>
         </Radio>
       </RadioGroup>
       <p className="text-sm text-muted">

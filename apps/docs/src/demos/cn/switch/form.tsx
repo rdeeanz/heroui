@@ -1,6 +1,6 @@
 "use client";
 
-import {Button, Label, Switch, SwitchGroup} from "@heroui/react";
+import {Button, Switch, SwitchGroup} from "@heroui/react";
 import React from "react";
 
 export function Form() {
@@ -19,27 +19,27 @@ export function Form() {
     <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
       <SwitchGroup>
         <Switch name="notifications" value="on">
-          <Switch.Control>
-            <Switch.Thumb />
-          </Switch.Control>
           <Switch.Content>
-            <Label className="text-sm">启用通知</Label>
+            <Switch.Control>
+              <Switch.Thumb />
+            </Switch.Control>
+            启用通知
           </Switch.Content>
         </Switch>
         <Switch defaultSelected name="newsletter" value="on">
-          <Switch.Control>
-            <Switch.Thumb />
-          </Switch.Control>
           <Switch.Content>
-            <Label className="text-sm">订阅新闻简报</Label>
+            <Switch.Control>
+              <Switch.Thumb />
+            </Switch.Control>
+            订阅新闻简报
           </Switch.Content>
         </Switch>
         <Switch name="marketing" value="on">
-          <Switch.Control>
-            <Switch.Thumb />
-          </Switch.Control>
           <Switch.Content>
-            <Label className="text-sm">接收营销更新</Label>
+            <Switch.Control>
+              <Switch.Thumb />
+            </Switch.Control>
+            接收营销更新
           </Switch.Content>
         </Switch>
       </SwitchGroup>

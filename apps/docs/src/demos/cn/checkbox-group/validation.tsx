@@ -18,27 +18,27 @@ export function Validation() {
       <CheckboxGroup isRequired name="preferences">
         <Label>偏好设置</Label>
         <Checkbox value="email">
-          <Checkbox.Control>
-            <Checkbox.Indicator />
-          </Checkbox.Control>
           <Checkbox.Content>
-            <Label>邮件通知</Label>
+            <Checkbox.Control>
+              <Checkbox.Indicator />
+            </Checkbox.Control>
+            邮件通知
           </Checkbox.Content>
         </Checkbox>
         <Checkbox value="sms">
-          <Checkbox.Control>
-            <Checkbox.Indicator />
-          </Checkbox.Control>
           <Checkbox.Content>
-            <Label>短信通知</Label>
+            <Checkbox.Control>
+              <Checkbox.Indicator />
+            </Checkbox.Control>
+            短信通知
           </Checkbox.Content>
         </Checkbox>
         <Checkbox value="push">
-          <Checkbox.Control>
-            <Checkbox.Indicator />
-          </Checkbox.Control>
           <Checkbox.Content>
-            <Label>推送通知</Label>
+            <Checkbox.Control>
+              <Checkbox.Indicator />
+            </Checkbox.Control>
+            推送通知
           </Checkbox.Content>
         </Checkbox>
         <FieldError>请至少选择一种通知方式。</FieldError>

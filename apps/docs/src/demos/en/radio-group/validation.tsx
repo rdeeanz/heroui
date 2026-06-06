@@ -21,31 +21,31 @@ export function Validation() {
       <RadioGroup isRequired name="plan-validation">
         <Label>Subscription plan</Label>
         <Radio value="starter">
-          <Radio.Control>
-            <Radio.Indicator />
-          </Radio.Control>
           <Radio.Content>
-            <Label>Starter</Label>
-            <Description>For side projects and small teams</Description>
+            <Radio.Control>
+              <Radio.Indicator />
+            </Radio.Control>
+            Starter
           </Radio.Content>
+          <Description>For side projects and small teams</Description>
         </Radio>
         <Radio value="pro">
-          <Radio.Control>
-            <Radio.Indicator />
-          </Radio.Control>
           <Radio.Content>
-            <Label>Pro</Label>
-            <Description>Advanced reporting and analytics</Description>
+            <Radio.Control>
+              <Radio.Indicator />
+            </Radio.Control>
+            Pro
           </Radio.Content>
+          <Description>Advanced reporting and analytics</Description>
         </Radio>
         <Radio value="teams">
-          <Radio.Control>
-            <Radio.Indicator />
-          </Radio.Control>
           <Radio.Content>
-            <Label>Teams</Label>
-            <Description>Share access with up to 10 teammates</Description>
+            <Radio.Control>
+              <Radio.Indicator />
+            </Radio.Control>
+            Teams
           </Radio.Content>
+          <Description>Share access with up to 10 teammates</Description>
         </Radio>
         <FieldError>Choose a subscription before continuing.</FieldError>
       </RadioGroup>

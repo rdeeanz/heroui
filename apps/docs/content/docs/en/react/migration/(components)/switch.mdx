@@ -27,11 +27,11 @@ import { Switch, Label } from "@heroui/react";
 export default function App() {
   return (
     <Switch>
-      <Switch.Control>
-        <Switch.Thumb />
-      </Switch.Control>
       <Switch.Content>
-        <Label>Enable notifications</Label>
+        <Switch.Control>
+          <Switch.Thumb />
+        </Switch.Control>
+        Enable notifications
       </Switch.Content>
     </Switch>
   );
@@ -43,7 +43,7 @@ export default function App() {
 ### 1. Component Structure
 
 **v2:** Simple Switch with children as label
-**v3:** Compound components (`Switch.Control`, `Switch.Thumb`, `Switch.Content`) with `Label` component
+**v3:** Compound components (`Switch.Content`, `Switch.Control`, `Switch.Thumb`) with `Label` component
 
 ### 2. Prop Changes
 
@@ -62,7 +62,7 @@ export default function App() {
 ### 3. New Components
 
 - `SwitchGroup` - For grouping multiple switches
-- `Switch.Content` - Container for label and description
+- `Switch.Content` - The clickable label wrapping the control and `Label`
 - `Switch.Icon` - For icons inside the thumb
 
 ## Migration Examples
@@ -88,11 +88,11 @@ export default function App() {
     const [isSelected, setIsSelected] = useState(true);
 
     <Switch isSelected={isSelected} onChange={setIsSelected}>
-      <Switch.Control>
-        <Switch.Thumb />
-      </Switch.Control>
       <Switch.Content>
-        <Label>Airplane mode</Label>
+        <Switch.Control>
+          <Switch.Thumb />
+        </Switch.Control>
+        Airplane mode
       </Switch.Content>
     </Switch>
     ```
@@ -110,9 +110,11 @@ export default function App() {
   <Tab value="v3">
     ```tsx
     <Switch defaultSelected aria-label="Automatic updates">
-      <Switch.Control>
-        <Switch.Thumb />
-      </Switch.Control>
+      <Switch.Content>
+        <Switch.Control>
+          <Switch.Thumb />
+        </Switch.Control>
+      </Switch.Content>
     </Switch>
     ```
   </Tab>
@@ -129,15 +131,15 @@ export default function App() {
   <Tab value="v3">
     ```tsx
     <Switch>
-      <Switch.Control>
-        <Switch.Thumb>
-          <Switch.Icon>
-            <CheckIcon />
-          </Switch.Icon>
-        </Switch.Thumb>
-      </Switch.Control>
       <Switch.Content>
-        <Label>Enable notifications</Label>
+        <Switch.Control>
+          <Switch.Thumb>
+            <Switch.Icon>
+              <CheckIcon />
+            </Switch.Icon>
+          </Switch.Thumb>
+        </Switch.Control>
+        Enable notifications
       </Switch.Content>
     </Switch>
     ```
@@ -160,13 +162,13 @@ export default function App() {
   <Tab value="v3">
     ```tsx
     <Switch>
-      <Switch.Control className="flex items-center gap-2">
-        <SunIcon />
-        <Switch.Thumb />
-        <MoonIcon />
-      </Switch.Control>
       <Switch.Content>
-        <Label>Dark mode</Label>
+        <Switch.Control className="flex items-center gap-2">
+          <SunIcon />
+          <Switch.Thumb />
+          <MoonIcon />
+        </Switch.Control>
+        Dark mode
       </Switch.Content>
     </Switch>
     ```
@@ -188,13 +190,13 @@ export default function App() {
     import { Switch, Label, Description } from "@heroui/react";
 
     <Switch>
-      <Switch.Control>
-        <Switch.Thumb />
-      </Switch.Control>
       <Switch.Content>
-        <Label>Enable notifications</Label>
-        <Description>You will receive notifications for all activity</Description>
+        <Switch.Control>
+          <Switch.Thumb />
+        </Switch.Control>
+        Enable notifications
       </Switch.Content>
+      <Description>You will receive notifications for all activity</Description>
     </Switch>
     ```
   </Tab>
@@ -223,54 +225,54 @@ export default function App() {
     {/* Sizes */}
     <div className="flex gap-4">
       <Switch size="sm">
-        <Switch.Control>
-          <Switch.Thumb />
-        </Switch.Control>
         <Switch.Content>
-          <Label>Small</Label>
+          <Switch.Control>
+            <Switch.Thumb />
+          </Switch.Control>
+          Small
         </Switch.Content>
       </Switch>
       <Switch size="md">
-        <Switch.Control>
-          <Switch.Thumb />
-        </Switch.Control>
         <Switch.Content>
-          <Label>Medium</Label>
+          <Switch.Control>
+            <Switch.Thumb />
+          </Switch.Control>
+          Medium
         </Switch.Content>
       </Switch>
       <Switch size="lg">
-        <Switch.Control>
-          <Switch.Thumb />
-        </Switch.Control>
         <Switch.Content>
-          <Label>Large</Label>
+          <Switch.Control>
+            <Switch.Thumb />
+          </Switch.Control>
+          Large
         </Switch.Content>
       </Switch>
     </div>
     
     {/* Colors - Use Tailwind CSS classes */}
     <Switch>
-      <Switch.Control className="data-[selected=true]:bg-accent">
-        <Switch.Thumb />
-      </Switch.Control>
       <Switch.Content>
-        <Label>Primary</Label>
+        <Switch.Control className="data-[selected=true]:bg-accent">
+          <Switch.Thumb />
+        </Switch.Control>
+        Primary
       </Switch.Content>
     </Switch>
     <Switch>
-      <Switch.Control className="data-[selected=true]:bg-success">
-        <Switch.Thumb />
-      </Switch.Control>
       <Switch.Content>
-        <Label>Success</Label>
+        <Switch.Control className="data-[selected=true]:bg-success">
+          <Switch.Thumb />
+        </Switch.Control>
+        Success
       </Switch.Content>
     </Switch>
     <Switch>
-      <Switch.Control className="data-[selected=true]:bg-danger">
-        <Switch.Thumb />
-      </Switch.Control>
       <Switch.Content>
-        <Label>Danger</Label>
+        <Switch.Control className="data-[selected=true]:bg-danger">
+          <Switch.Thumb />
+        </Switch.Control>
+        Danger
       </Switch.Content>
     </Switch>
     ```
@@ -295,19 +297,19 @@ export default function App() {
 
     <SwitchGroup>
       <Switch name="notifications">
-        <Switch.Control>
-          <Switch.Thumb />
-        </Switch.Control>
         <Switch.Content>
-          <Label>Allow Notifications</Label>
+          <Switch.Control>
+            <Switch.Thumb />
+          </Switch.Control>
+          Allow Notifications
         </Switch.Content>
       </Switch>
       <Switch name="marketing">
-        <Switch.Control>
-          <Switch.Thumb />
-        </Switch.Control>
         <Switch.Content>
-          <Label>Marketing emails</Label>
+          <Switch.Control>
+            <Switch.Thumb />
+          </Switch.Control>
+          Marketing emails
         </Switch.Content>
       </Switch>
     </SwitchGroup>
@@ -321,12 +323,13 @@ The v3 Switch follows this structure:
 
 ```
 Switch (Root)
-  ├── Switch.Control
-  │   └── Switch.Thumb
-  │       └── Switch.Icon (optional)
-  └── Switch.Content (optional)
-      ├── Label (optional)
-      └── Description (optional)
+  ├── Switch.Content (the clickable label)
+  │   ├── Switch.Control
+  │   │   └── Switch.Thumb
+  │   │       └── Switch.Icon (optional)
+  │   └── Label
+  ├── Description (optional, sibling)
+  └── FieldError (optional, sibling)
 ```
 
 For groups:
@@ -334,17 +337,17 @@ For groups:
 ```
 SwitchGroup
   ├── Switch
-  │   ├── Switch.Control
-  │   │   └── Switch.Thumb
-  │   └── Switch.Content
-  │       ├── Label
-  │       └── Description (optional)
+  │   ├── Switch.Content
+  │   │   ├── Switch.Control
+  │   │   │   └── Switch.Thumb
+  │   │   └── Label
+  │   └── Description (optional)
   └── Switch
-      ├── Switch.Control
-      │   └── Switch.Thumb
-      └── Switch.Content
-          ├── Label
-          └── Description (optional)
+      ├── Switch.Content
+      │   ├── Switch.Control
+      │   │   └── Switch.Thumb
+      │   └── Label
+      └── Description (optional)
 ```
 
 ## Important Notes
@@ -357,7 +360,7 @@ SwitchGroup
 ### Label Handling
 
 - **v2:** Children were used as label
-- **v3:** Use `Label` component inside `Switch.Content`; optionally add `Description` alongside it
+- **v3:** Label goes inside `Switch.Content` (the clickable label); `Description`/`FieldError` are siblings of `Switch.Content`
 
 ### Icons
 
@@ -366,11 +369,11 @@ SwitchGroup
 
 ## Summary
 
-1. **Component Structure**: Must use compound components (`Switch.Control`, `Switch.Thumb`, `Switch.Content`)
-2. **Content Container**: Use `Switch.Content` to wrap `Label` and `Description` for proper layout
+1. **Component Structure**: Must use compound components (`Switch.Content`, `Switch.Control`, `Switch.Thumb`)
+2. **Clickable Label**: Use `Switch.Content` to wrap `Switch.Control` and `Label`; place `Description`/`FieldError` as siblings of `Switch.Content`
 3. **Label Handling**: Children no longer used as label - use `Label` component inside `Switch.Content`
 4. **Event Handler**: `onValueChange` → `onChange`
 5. **Styling Props Removed**: `color` - use Tailwind CSS
 6. **Icon Props Removed**: `thumbIcon`, `startContent`, `endContent` - use components or customize directly
 7. **ClassNames Removed**: Use `className` props on individual components
-8. **New Components**: `SwitchGroup` for grouping switches, `Switch.Content` for label/description container
+8. **New Components**: `SwitchGroup` for grouping switches, `Switch.Content` as the clickable label wrapping the control and `Label`

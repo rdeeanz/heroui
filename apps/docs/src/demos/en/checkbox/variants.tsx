@@ -1,4 +1,4 @@
-import {Checkbox, Description, Label} from "@heroui/react";
+import {Checkbox, Description} from "@heroui/react";
 
 export function Variants() {
   return (
@@ -6,25 +6,25 @@ export function Variants() {
       <div className="flex flex-col gap-2">
         <p className="text-sm font-medium text-muted">Primary variant</p>
         <Checkbox id="primary" name="primary" variant="primary">
-          <Checkbox.Control>
-            <Checkbox.Indicator />
-          </Checkbox.Control>
           <Checkbox.Content>
-            <Label htmlFor="primary">Primary checkbox</Label>
-            <Description>Standard styling with default background</Description>
+            <Checkbox.Control>
+              <Checkbox.Indicator />
+            </Checkbox.Control>
+            Primary checkbox
           </Checkbox.Content>
+          <Description>Standard styling with default background</Description>
         </Checkbox>
       </div>
       <div className="flex flex-col gap-2">
         <p className="text-sm font-medium text-muted">Secondary variant</p>
         <Checkbox id="secondary" name="secondary" variant="secondary">
-          <Checkbox.Control>
-            <Checkbox.Indicator />
-          </Checkbox.Control>
           <Checkbox.Content>
-            <Label htmlFor="secondary">Secondary checkbox</Label>
-            <Description>Lower emphasis variant for use in surfaces</Description>
+            <Checkbox.Control>
+              <Checkbox.Indicator />
+            </Checkbox.Control>
+            Secondary checkbox
           </Checkbox.Content>
+          <Description>Lower emphasis variant for use in surfaces</Description>
         </Checkbox>
       </div>
     </div>

@@ -7,31 +7,31 @@ export function OnSurface() {
         <Label>Select your interests</Label>
         <Description>Choose all that apply</Description>
         <Checkbox value="coding">
-          <Checkbox.Control>
-            <Checkbox.Indicator />
-          </Checkbox.Control>
           <Checkbox.Content>
-            <Label>Coding</Label>
-            <Description>Love building software</Description>
+            <Checkbox.Control>
+              <Checkbox.Indicator />
+            </Checkbox.Control>
+            Coding
           </Checkbox.Content>
+          <Description>Love building software</Description>
         </Checkbox>
         <Checkbox value="design">
-          <Checkbox.Control>
-            <Checkbox.Indicator />
-          </Checkbox.Control>
           <Checkbox.Content>
-            <Label>Design</Label>
-            <Description>Enjoy creating beautiful interfaces</Description>
+            <Checkbox.Control>
+              <Checkbox.Indicator />
+            </Checkbox.Control>
+            Design
           </Checkbox.Content>
+          <Description>Enjoy creating beautiful interfaces</Description>
         </Checkbox>
         <Checkbox value="writing">
-          <Checkbox.Control>
-            <Checkbox.Indicator />
-          </Checkbox.Control>
           <Checkbox.Content>
-            <Label>Writing</Label>
-            <Description>Passionate about content creation</Description>
+            <Checkbox.Control>
+              <Checkbox.Indicator />
+            </Checkbox.Control>
+            Writing
           </Checkbox.Content>
+          <Description>Passionate about content creation</Description>
         </Checkbox>
       </CheckboxGroup>
     </Surface>

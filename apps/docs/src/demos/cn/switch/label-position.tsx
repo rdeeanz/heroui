@@ -1,23 +1,23 @@
-import {Label, Switch} from "@heroui/react";
+import {Switch} from "@heroui/react";
 
 export function LabelPosition() {
   return (
     <div className="flex flex-col gap-4">
       <Switch>
-        <Switch.Control>
-          <Switch.Thumb />
-        </Switch.Control>
         <Switch.Content>
-          <Label className="text-sm">标签在后</Label>
+          <Switch.Control>
+            <Switch.Thumb />
+          </Switch.Control>
+          标签在后
         </Switch.Content>
       </Switch>
       <Switch>
         <Switch.Content>
-          <Label className="text-sm">标签在前</Label>
+          标签在前
+          <Switch.Control>
+            <Switch.Thumb />
+          </Switch.Control>
         </Switch.Content>
-        <Switch.Control>
-          <Switch.Thumb />
-        </Switch.Control>
       </Switch>
     </div>
   );

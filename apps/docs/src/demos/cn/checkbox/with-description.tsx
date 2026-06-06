@@ -1,15 +1,15 @@
-import {Checkbox, Description, Label} from "@heroui/react";
+import {Checkbox, Description} from "@heroui/react";
 
 export function WithDescription() {
   return (
-    <Checkbox id="description-notifications">
-      <Checkbox.Control>
-        <Checkbox.Indicator />
-      </Checkbox.Control>
+    <Checkbox name="description-notifications">
       <Checkbox.Content>
-        <Label htmlFor="description-notifications">邮件通知</Label>
-        <Description>当有人在评论中@你时收到通知</Description>
+        <Checkbox.Control>
+          <Checkbox.Indicator />
+        </Checkbox.Control>
+        邮件通知
       </Checkbox.Content>
+      <Description>当有人在评论中提及您时收到通知</Description>
     </Checkbox>
   );
 }

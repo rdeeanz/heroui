@@ -1,15 +1,15 @@
-import {Checkbox, Description, Label} from "@heroui/react";
+import {Checkbox, FieldError} from "@heroui/react";
 
 export function Invalid() {
   return (
-    <Checkbox isInvalid name="agreement">
-      <Checkbox.Control>
-        <Checkbox.Indicator />
-      </Checkbox.Control>
+    <Checkbox isInvalid isRequired name="agreement">
       <Checkbox.Content>
-        <Label htmlFor="agreement">I agree to the terms</Label>
-        <Description>You must accept the terms to continue</Description>
+        <Checkbox.Control>
+          <Checkbox.Indicator />
+        </Checkbox.Control>
+        I agree to the terms
       </Checkbox.Content>
+      <FieldError>You must accept the terms to continue</FieldError>
     </Checkbox>
   );
 }

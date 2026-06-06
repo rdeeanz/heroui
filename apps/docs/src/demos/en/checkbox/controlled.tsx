@@ -1,6 +1,6 @@
 "use client";
 
-import {Checkbox, Label} from "@heroui/react";
+import {Checkbox} from "@heroui/react";
 import {useState} from "react";
 
 export function Controlled() {
@@ -8,16 +8,14 @@ export function Controlled() {
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex items-center gap-3">
-        <Checkbox id="email-notifications" isSelected={isSelected} onChange={setIsSelected}>
+      <Checkbox id="email-notifications" isSelected={isSelected} onChange={setIsSelected}>
+        <Checkbox.Content>
           <Checkbox.Control>
             <Checkbox.Indicator />
           </Checkbox.Control>
-          <Checkbox.Content>
-            <Label htmlFor="email-notifications">Email notifications</Label>
-          </Checkbox.Content>
-        </Checkbox>
-      </div>
+          Email notifications
+        </Checkbox.Content>
+      </Checkbox>
       <p className="text-sm text-muted">
         Status: <span className="font-medium">{isSelected ? "Enabled" : "Disabled"}</span>
       </p>
