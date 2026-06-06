@@ -13,8 +13,21 @@ import {
   TooltipTrigger as TooltipTriggerPrimitive,
 } from "react-aria-components/Tooltip";
 
+import {useCSSVariable} from "../../hooks/use-css-variable";
 import {composeSlotClassName, composeTwRenderProps} from "../../utils/compose";
 import {dom} from "../../utils/dom";
+
+const parseCSSDelay = (value: string | undefined): number | undefined => {
+  if (!value) return undefined;
+  const trimmed = value.trim();
+  const val = parseFloat(trimmed);
+
+  if (Number.isNaN(val)) return undefined;
+  if (trimmed.endsWith("ms")) return val;
+  if (trimmed.endsWith("s")) return val * 1000;
+
+  return val;
+};
 
 /* -------------------------------------------------------------------------------------------------
  * Tooltip Context
@@ -32,13 +45,26 @@ type TooltipRootProps = ComponentPropsWithRef<typeof TooltipTriggerPrimitive>;
 
 const TooltipRoot = ({
   children,
+  closeDelay,
+  delay,
   ...props
 }: ComponentPropsWithRef<typeof TooltipTriggerPrimitive>) => {
   const slots = React.useMemo(() => tooltipVariants(), []);
 
+  const cssDelay = useCSSVariable("--tooltip-delay");
+  const cssCloseDelay = useCSSVariable("--tooltip-close-delay");
+
+  const resolvedDelay = delay ?? parseCSSDelay(cssDelay);
+  const resolvedCloseDelay = closeDelay ?? parseCSSDelay(cssCloseDelay);
+
   return (
     <TooltipContext value={{slots}}>
-      <TooltipTriggerPrimitive data-slot="tooltip-root" {...props}>
+      <TooltipTriggerPrimitive
+        closeDelay={resolvedCloseDelay}
+        data-slot="tooltip-root"
+        delay={resolvedDelay}
+        {...props}
+      >
         {children}
       </TooltipTriggerPrimitive>
     </TooltipContext>
