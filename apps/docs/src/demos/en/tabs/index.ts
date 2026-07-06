@@ -1,6 +1,5 @@
 export {Basic} from "./basic";
 export {Vertical} from "./vertical";
-export {Overflow} from "./overflow";
 export {Disabled} from "./disabled";
 export {CustomStyles} from "./custom-styles";
 export {WithSeparator} from "./with-separator";
