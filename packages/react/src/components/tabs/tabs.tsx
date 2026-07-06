@@ -5,7 +5,7 @@ import type {TabsVariants} from "@heroui/styles";
 import type {ComponentPropsWithRef, ReactNode} from "react";
 
 import {tabsVariants} from "@heroui/styles";
-import React, {createContext, useContext} from "react";
+import React, {createContext, use, useRef} from "react";
 import {SelectionIndicator as SelectionIndicatorPrimitive} from "react-aria-components/SelectionIndicator";
 import {
   TabList as TabListPrimitive,
@@ -16,6 +16,8 @@ import {
 
 import {composeSlotClassName, composeTwRenderProps} from "../../utils/compose";
 import {dom} from "../../utils/dom";
+import {IconChevronDown, IconChevronLeft, IconChevronRight, IconChevronUp} from "../icons";
+import {ScrollShadow} from "../scroll-shadow";
 
 /* -------------------------------------------------------------------------------------------------
  * Tabs Context
@@ -74,7 +76,18 @@ const TabListContainer = <E extends keyof React.JSX.IntrinsicElements = "div">({
   ...props
 }: TabListContainerProps<E> &
   Omit<React.JSX.IntrinsicElements[E], keyof TabListContainerProps<E>>) => {
-  const {slots} = useContext(TabsContext);
+  const {orientation = "horizontal", slots} = use(TabsContext);
+  const scrollerRef = useRef<HTMLDivElement | null>(null);
+  const isVertical = orientation === "vertical";
+
+  const scrollBy = (direction: 1 | -1) => {
+    const el = scrollerRef.current;
+
+    if (!el) return;
+    const size = isVertical ? el.clientHeight : el.clientWidth;
+
+    el.scrollBy({behavior: "smooth", [isVertical ? "top" : "left"]: direction * size * 0.8});
+  };
 
   return (
     <dom.div
@@ -82,7 +95,33 @@ const TabListContainer = <E extends keyof React.JSX.IntrinsicElements = "div">({
       data-slot="tabs-list-container"
       {...(props as any)}
     >
-      {children}
+      <ScrollShadow
+        ref={scrollerRef}
+        hideScrollBar
+        className={composeSlotClassName(slots?.scroller)}
+        orientation={orientation}
+        size={64}
+      >
+        {children}
+      </ScrollShadow>
+      <button
+        aria-label={isVertical ? "Scroll tabs up" : "Scroll tabs left"}
+        className={composeSlotClassName(slots?.scrollPrev)}
+        tabIndex={-1}
+        type="button"
+        onClick={() => scrollBy(-1)}
+      >
+        {isVertical ? <IconChevronUp /> : <IconChevronLeft />}
+      </button>
+      <button
+        aria-label={isVertical ? "Scroll tabs down" : "Scroll tabs right"}
+        className={composeSlotClassName(slots?.scrollNext)}
+        tabIndex={-1}
+        type="button"
+        onClick={() => scrollBy(1)}
+      >
+        {isVertical ? <IconChevronDown /> : <IconChevronRight />}
+      </button>
     </dom.div>
   );
 };
@@ -96,7 +135,7 @@ interface TabListProps extends ComponentPropsWithRef<typeof TabListPrimitive<obj
 }
 
 const TabList = ({children, className, ...props}: TabListProps) => {
-  const {slots} = useContext(TabsContext);
+  const {slots} = use(TabsContext);
 
   return (
     <TabListPrimitive
@@ -117,7 +156,7 @@ interface TabProps extends ComponentPropsWithRef<typeof TabPrimitive> {
 }
 
 const Tab = ({children, className, ...props}: TabProps) => {
-  const {slots} = useContext(TabsContext);
+  const {slots} = use(TabsContext);
 
   return (
     <TabPrimitive
@@ -138,7 +177,7 @@ interface TabIndicatorProps extends ComponentPropsWithRef<typeof SelectionIndica
 }
 
 const TabIndicator = ({className, ...props}: TabIndicatorProps) => {
-  const {slots} = useContext(TabsContext);
+  const {slots} = use(TabsContext);
 
   return (
     <SelectionIndicatorPrimitive
@@ -158,7 +197,7 @@ interface TabPanelProps extends Omit<ComponentPropsWithRef<typeof TabPanelPrimit
 }
 
 const TabPanel = ({children, className, ...props}: TabPanelProps) => {
-  const {slots} = useContext(TabsContext);
+  const {slots} = use(TabsContext);
 
   return (
     <TabPanelPrimitive
@@ -184,7 +223,7 @@ const TabSeparator = <E extends keyof React.JSX.IntrinsicElements = "span">({
   className,
   ...props
 }: TabSeparatorProps<E> & Omit<React.JSX.IntrinsicElements[E], keyof TabSeparatorProps<E>>) => {
-  const {slots} = useContext(TabsContext);
+  const {slots} = use(TabsContext);
 
   return (
     <dom.span
