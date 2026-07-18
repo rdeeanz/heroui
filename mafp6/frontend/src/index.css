@@ -2,6 +2,60 @@
 @import "tailwindcss";
 @import "@heroui/styles";
 
+/* ============================================================================
+   PALET "default"/"primary" (skala numerik) + DARK MODE.
+   HeroUI v3 memakai token semantik bernama, BUKAN skala default-50..900 seperti
+   NextUI v2. Aplikasi ini memakai skala numerik, jadi kita definisikan sendiri
+   kelas utilitasnya di sini.
+
+   Teknik: nilai mode TERANG ditulis sebagai FALLBACK di dalam var() pada tiap
+   kelas (mis. `var(--d50, #f8fafc)`), sehingga saat mode terang (variabel belum
+   didefinisikan) warna terang otomatis dipakai. Saat kelas `.dark` aktif
+   (mekanisme dark mode HeroUI v3), variabel --dNN/--pNN diisi nilai gelap
+   sehingga seluruh kelas otomatis membalik. Cara ini andal berdampingan dengan
+   CSS precompiled HeroUI tanpa bergantung pada blok :root/@theme.
+   ============================================================================ */
+
+/* Nilai mode GELAP (skala dibalik: indeks kecil = paling gelap). */
+.dark {
+  --d50: #0f172a; /* Latar halaman paling gelap. */
+  --d100: #1e293b; /* Isian / baris ter-elevasi. */
+  --d200: #334155; /* Garis batas / baris kategori. */
+  --d300: #475569;
+  --d400: #7b8794; /* Teks sangat samar. */
+  --d500: #94a3b8; /* Teks samar. */
+  --d600: #b6c2d1;
+  --d700: #cbd5e1;
+  --d900: #f1f5f9; /* Teks utama (hampir putih). */
+  --p50: #172554; /* Latar primer gelap. */
+  --p600: #60a5fa; /* Teks primer lebih terang. */
+}
+
+/* --- Latar (background); fallback = warna mode terang. --- */
+.bg-default-50 { background-color: var(--d50, #f8fafc); }
+.bg-default-100 { background-color: var(--d100, #f1f5f9); }
+.bg-default-200 { background-color: var(--d200, #e2e8f0); }
+.bg-default-200\/60 { background-color: var(--d200, #e2e8f0); }
+.bg-primary-50 { background-color: var(--p50, #eff6ff); }
+
+/* Varian hover. */
+.hover\:bg-default-50:hover { background-color: var(--d50, #f8fafc); }
+.hover\:bg-default-100:hover { background-color: var(--d100, #f1f5f9); }
+
+/* --- Teks. --- */
+.text-default-400 { color: var(--d400, #94a3b8); }
+.text-default-500 { color: var(--d500, #64748b); }
+.text-default-600 { color: var(--d600, #475569); }
+.text-default-700 { color: var(--d700, #334155); }
+.text-default-900 { color: var(--d900, #0f172a); }
+.text-primary-600 { color: var(--p600, #2563eb); }
+
+/* --- Garis batas (border). --- */
+.border-default-50 { border-color: var(--d50, #f8fafc); }
+.border-default-100 { border-color: var(--d100, #f1f5f9); }
+.border-default-200 { border-color: var(--d200, #e2e8f0); }
+.border-default-300 { border-color: var(--d300, #cbd5e1); }
+
 /* Beri tinggi penuh agar layout dashboard mengisi layar. */
 html,
 body,

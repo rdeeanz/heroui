@@ -16,9 +16,20 @@ import { ApprovalView } from "@/components/ApprovalView";
 import { ImportView } from "@/components/ImportView";
 import { AuditView } from "@/components/AuditView";
 import { NotificationBell } from "@/components/NotificationBell";
+import { Sidebar, type MenuItem } from "@/components/Sidebar";
 import { LoginPage } from "@/components/LoginPage";
 import { useAuth } from "@/auth/AuthContext";
+import { useDarkMode } from "@/lib/useDarkMode";
 import { labelPeriode, LABEL_ROLE, NAMA_BULAN } from "@/lib/format";
+
+// Judul halaman per tampilan (untuk topbar).
+const JUDUL: Record<Tampilan, string> = {
+  dashboard: "Dashboard Availability",
+  inspeksi: "Inspeksi Fasilitas",
+  persetujuan: "Persetujuan Laporan",
+  import: "Import Data Historis",
+  audit: "Jejak Audit",
+};
 
 // Tampilan-tampilan utama aplikasi.
 type Tampilan = "dashboard" | "inspeksi" | "persetujuan" | "import" | "audit";
@@ -46,6 +57,12 @@ export default function App() {
 function AppShell() {
   // Ambil pengguna aktif & fungsi logout.
   const { user, logout } = useAuth();
+  // Mode terang/gelap.
+  const { dark, toggle: toggleDark } = useDarkMode();
+  // Status sidebar (expand/collapse). Default expand HANYA di desktop (>=1024px).
+  const [sidebarOpen, setSidebarOpen] = useState<boolean>(
+    () => typeof window !== "undefined" && window.innerWidth >= 1024,
+  );
   // State daftar master untuk filter.
   const [regionalList, setRegionalList] = useState<Regional[]>([]);
   const [cabangList, setCabangList] = useState<Cabang[]>([]);
@@ -189,88 +206,77 @@ function AppShell() {
     }
   }
 
+  // Daftar menu sidebar, difilter sesuai peran pengguna.
+  const menu = useMemo<MenuItem[]>(() => {
+    const items: MenuItem[] = [
+      { key: "dashboard", label: "Dashboard" },
+      { key: "inspeksi", label: "Inspeksi" },
+      { key: "persetujuan", label: "Persetujuan" },
+    ];
+    // Import historis hanya untuk PIC Cabang & Admin Pusat.
+    if (user?.role === "PIC_CABANG" || user?.role === "ADMIN_PUSAT") {
+      items.push({ key: "import", label: "Import" });
+    }
+    // Audit hanya untuk Admin Pusat & Auditor.
+    if (user?.role === "ADMIN_PUSAT" || user?.role === "AUDITOR") {
+      items.push({ key: "audit", label: "Audit" });
+    }
+    return items;
+  }, [user]);
+
+  // Pilih menu: pindah tampilan; di layar kecil, tutup sidebar setelah memilih.
+  function pilihMenu(key: string) {
+    setTampilan(key as Tampilan);
+    if (window.innerWidth < 1024) setSidebarOpen(false);
+  }
+
   return (
-    // Kontainer halaman: latar lembut, padding responsif.
-    <div className="min-h-full bg-default-50 text-default-900">
-      {/* Header aplikasi. */}
-      <header className="border-b border-default-200 bg-white px-4 py-3 sm:px-6">
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <h1 className="text-lg font-bold sm:text-xl">
-              SiMFAS-Pelindo — Monitoring Availability Fasilitas Sipil Pelabuhan
-            </h1>
-            <p className="text-xs text-default-500">PT Pelabuhan Indonesia (Persero)</p>
-          </div>
-          {/* Navigasi + identitas pengguna + logout. */}
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-            <nav className="flex gap-2">
-              <Button
-                size="sm"
-                variant={tampilan === "dashboard" ? "primary" : "secondary"}
-                onPress={() => setTampilan("dashboard")}
-              >
-                Dashboard
-              </Button>
-              <Button
-                size="sm"
-                variant={tampilan === "inspeksi" ? "primary" : "secondary"}
-                onPress={() => setTampilan("inspeksi")}
-              >
-                Inspeksi
-              </Button>
-              <Button
-                size="sm"
-                variant={tampilan === "persetujuan" ? "primary" : "secondary"}
-                onPress={() => setTampilan("persetujuan")}
-              >
-                Persetujuan
-              </Button>
-              {/* Import historis hanya untuk PIC Cabang & Admin Pusat. */}
-              {user?.role === "PIC_CABANG" || user?.role === "ADMIN_PUSAT" ? (
-                <Button
-                  size="sm"
-                  variant={tampilan === "import" ? "primary" : "secondary"}
-                  onPress={() => setTampilan("import")}
-                >
-                  Import
-                </Button>
-              ) : null}
-              {/* Audit trail hanya untuk Admin Pusat & Auditor. */}
-              {user?.role === "ADMIN_PUSAT" || user?.role === "AUDITOR" ? (
-                <Button
-                  size="sm"
-                  variant={tampilan === "audit" ? "primary" : "secondary"}
-                  onPress={() => setTampilan("audit")}
-                >
-                  Audit
-                </Button>
-              ) : null}
-            </nav>
-            {/* Lonceng notifikasi + identitas pengguna & tombol keluar. */}
-            <div className="flex items-center gap-2 sm:border-l sm:border-default-200 sm:pl-3">
-              {/* Lonceng: navigasi mengikuti tautan notifikasi (bila tampilan valid). */}
-              <NotificationBell
-                isAdminPusat={user?.role === "ADMIN_PUSAT"}
-                onNavigate={(tautan) => {
-                  // Pindah tampilan hanya bila tautan cocok dengan tampilan yang ada.
-                  if (["dashboard", "inspeksi", "persetujuan", "import"].includes(tautan)) {
-                    setTampilan(tautan as Tampilan);
-                  }
-                }}
-              />
-              <div className="text-right">
-                <p className="text-xs font-semibold leading-tight">{user?.namaLengkap}</p>
-                <p className="text-[11px] text-default-500 leading-tight">
-                  {user ? (LABEL_ROLE[user.role] ?? user.role) : ""}
-                </p>
-              </div>
-              <Button size="sm" variant="tertiary" onPress={logout}>
-                Keluar
-              </Button>
-            </div>
-          </div>
-        </div>
-      </header>
+    // Layout: sidebar (kiri) + kolom konten (kanan).
+    <div className="flex min-h-screen bg-default-50 text-default-900">
+      {/* Sidebar navigasi: expand/collapse di semua mode + toggle dark mode. */}
+      <Sidebar
+        items={menu}
+        active={tampilan}
+        onSelect={pilihMenu}
+        open={sidebarOpen}
+        onToggle={() => setSidebarOpen((o) => !o)}
+        dark={dark}
+        onToggleDark={toggleDark}
+        userName={user?.namaLengkap ?? ""}
+        userRole={user ? (LABEL_ROLE[user.role] ?? user.role) : ""}
+        onLogout={logout}
+      />
+
+      {/* Kolom konten utama. */}
+      <div className="flex min-w-0 flex-1 flex-col">
+        {/* Topbar: tombol menu (mobile) + judul halaman + lonceng notifikasi. */}
+        <header className="flex items-center gap-3 border-b border-default-200 bg-surface px-4 py-3">
+          {/* Hamburger untuk membuka sidebar di layar kecil (disembunyikan di desktop). */}
+          <button
+            className="rounded-lg p-1.5 text-default-700 hover:bg-default-100 lg:hidden"
+            onClick={() => setSidebarOpen((o) => !o)}
+            aria-label="Buka menu"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+              <line x1="3" y1="6" x2="21" y2="6" /><line x1="3" y1="12" x2="21" y2="12" /><line x1="3" y1="18" x2="21" y2="18" />
+            </svg>
+          </button>
+          {/* Judul halaman aktif. */}
+          <h1 className="min-w-0 flex-1 truncate text-base font-bold">{JUDUL[tampilan]}</h1>
+          {/* Lonceng notifikasi. */}
+          <NotificationBell
+            isAdminPusat={user?.role === "ADMIN_PUSAT"}
+            onNavigate={(tautan) => {
+              // Pindah tampilan hanya bila tautan cocok dengan tampilan yang ada.
+              if (["dashboard", "inspeksi", "persetujuan", "import", "audit"].includes(tautan)) {
+                setTampilan(tautan as Tampilan);
+              }
+            }}
+          />
+        </header>
+
+        {/* Area konten yang dapat di-scroll. */}
+        <div className="min-w-0 flex-1 overflow-y-auto">
 
       {/* Tampilan Inspeksi. */}
       {tampilan === "inspeksi" ? (
@@ -347,7 +353,7 @@ function AppShell() {
             <SummaryCards data={laporan.hasil} />
 
             {/* Grafik tren availability. */}
-            <section className="rounded-xl border border-default-200 bg-white p-4">
+            <section className="rounded-xl border border-default-200 bg-surface p-4">
               <h2 className="mb-2 text-sm font-semibold">Tren Availability (per periode)</h2>
               <TrendChart data={tren} seriKategori={seriKategori} />
             </section>
@@ -363,6 +369,8 @@ function AppShell() {
         ) : null}
       </main>
       )}
+        </div>
+      </div>
     </div>
   );
 }
