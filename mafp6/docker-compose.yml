@@ -1,0 +1,56 @@
+# ============================================================================
+#  Orkestrasi seluruh layanan SiMFAS-Pelindo: PostgreSQL + backend + frontend.
+#  "build once, deploy anywhere" — portable ke VPS Hostinger maupun cloud lain.
+# ============================================================================
+
+services:
+  # ---- Database PostgreSQL ----
+  postgres:
+    image: postgres:16-alpine # Image PostgreSQL ringan.
+    restart: unless-stopped # Nyalakan ulang otomatis bila mati.
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER} # User DB dari .env.
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD} # Password DB dari .env.
+      POSTGRES_DB: ${POSTGRES_DB} # Nama database.
+    volumes:
+      - pgdata:/var/lib/postgresql/data # Simpan data di volume persisten.
+    healthcheck:
+      # Cek kesiapan DB agar backend menunggu sampai DB siap.
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # ---- Backend NestJS ----
+  backend:
+    build: ./backend # Bangun dari Dockerfile backend.
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy # Tunggu DB sehat dulu.
+    environment:
+      DATABASE_URL: ${DATABASE_URL} # URL koneksi Prisma.
+      PORT: 3000 # Port internal.
+      CORS_ORIGIN: ${CORS_ORIGIN} # Origin frontend yang diizinkan.
+      JWT_SECRET: ${JWT_SECRET} # Kunci JWT.
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN} # Masa berlaku token.
+      S3_REGION: ${S3_REGION} # Konfigurasi S3.
+      S3_BUCKET: ${S3_BUCKET}
+      S3_ACCESS_KEY_ID: ${S3_ACCESS_KEY_ID}
+      S3_SECRET_ACCESS_KEY: ${S3_SECRET_ACCESS_KEY}
+      S3_ENDPOINT: ${S3_ENDPOINT}
+    expose:
+      - "3000" # Hanya diekspos ke jaringan internal (diakses via Nginx frontend).
+
+  # ---- Frontend (React build + Nginx) ----
+  frontend:
+    build: ./frontend # Bangun dari Dockerfile frontend.
+    restart: unless-stopped
+    depends_on:
+      - backend # Butuh backend untuk proxy /api.
+    ports:
+      - "8080:80" # Petakan port 8080 host -> 80 container.
+
+# Volume persisten untuk data PostgreSQL.
+volumes:
+  pgdata:

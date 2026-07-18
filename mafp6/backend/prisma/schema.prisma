@@ -1,0 +1,272 @@
+// ============================================================================
+//  SKEMA DATABASE (Prisma + PostgreSQL) — SiMFAS-Pelindo
+// ----------------------------------------------------------------------------
+//  Memodelkan hierarki: Regional -> Cabang -> Periode Laporan ->
+//  Kategori -> Fasilitas -> Objek Fasilitas, plus modul Inspeksi & User/RBAC.
+// ============================================================================
+
+// Generator client Prisma untuk dipakai dari kode TypeScript.
+generator client {
+  provider = "prisma-client-js"
+}
+
+// Sumber data: PostgreSQL, URL diambil dari environment variable.
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ---------------------------------------------------------------------------
+//  MASTER DATA HIERARKIS
+// ---------------------------------------------------------------------------
+
+// Regional = level tertinggi wilayah (mis. Regional 1..4).
+model Regional {
+  id        String   @id @default(uuid()) // Kunci utama (UUID).
+  kode      String   @unique // Kode singkat, mis. "REG3".
+  nama      String // Nama tampilan, mis. "Regional 3".
+  cabang    Cabang[] // Relasi: satu regional punya banyak cabang.
+  createdAt DateTime @default(now()) // Waktu dibuat.
+  updatedAt DateTime @updatedAt // Waktu diperbarui otomatis.
+}
+
+// Cabang/Pelabuhan di bawah sebuah Regional (mis. Tanjung Priok).
+model Cabang {
+  id         String            @id @default(uuid())
+  kode       String            @unique
+  nama       String
+  regionalId String // Foreign key ke Regional.
+  regional   Regional          @relation(fields: [regionalId], references: [id])
+  periode    PeriodeLaporan[] // Relasi: banyak periode laporan bulanan.
+  users      User[] // User yang terikat ke cabang ini (PIC Cabang).
+  createdAt  DateTime          @default(now())
+  updatedAt  DateTime          @updatedAt
+
+  @@index([regionalId]) // Index untuk pencarian per regional.
+}
+
+// Kategori fasilitas (Dermaga, Lapangan Penumpukan, Gudang, Terminal Penumpang).
+// Disimpan sebagai master agar bisa ditambah lewat data, bukan hardcode.
+model Kategori {
+  id        String      @id @default(uuid())
+  kode      String      @unique // "I", "II", "III", "IV".
+  nama      String // "DERMAGA", dst.
+  urutan    Int // Urutan tampil.
+  fasilitas Fasilitas[] // Relasi ke fasilitas.
+}
+
+// ---------------------------------------------------------------------------
+//  DATA PELAPORAN BULANAN (transaksional)
+// ---------------------------------------------------------------------------
+
+// Status alur pelaporan bulanan mengikuti PRD (Cabang -> Regional -> Pusat).
+enum StatusLaporan {
+  DRAFT // Sedang diisi cabang.
+  SUBMITTED // Sudah dikirim cabang, menunggu review regional.
+  REVIEWED // Sudah direview/di-approve regional.
+  REJECTED // Ditolak, dikembalikan ke cabang untuk revisi.
+}
+
+// Periode laporan = satu bulan-tahun untuk satu cabang.
+model PeriodeLaporan {
+  id        String        @id @default(uuid())
+  cabangId  String // Cabang pemilik laporan.
+  cabang    Cabang        @relation(fields: [cabangId], references: [id])
+  tahun     Int // Tahun, mis. 2024.
+  bulan     Int // Bulan 1..12.
+  status    StatusLaporan @default(DRAFT) // Status alur approval.
+  fasilitas Fasilitas[] // Fasilitas yang dilaporkan pada periode ini.
+  // --- Jejak alur persetujuan (Cabang submit -> Regional review) ---
+  submittedAt   DateTime? // Waktu cabang mengirim laporan.
+  submittedBy   String? // Email/NIPP pengirim (PIC Cabang).
+  reviewedAt    DateTime? // Waktu regional mereview.
+  reviewedBy    String? // Email/NIPP reviewer (Admin Regional/Pusat).
+  catatanReview String? // Catatan/alasan (khususnya bila ditolak).
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  // Satu cabang hanya boleh punya satu laporan per bulan-tahun.
+  @@unique([cabangId, tahun, bulan])
+  @@index([cabangId])
+}
+
+// Fasilitas konkret pada satu periode (mis. "Dermaga A" pada FEB-2024).
+model Fasilitas {
+  id         String           @id @default(uuid())
+  periodeId  String // Periode laporan pemilik.
+  periode    PeriodeLaporan   @relation(fields: [periodeId], references: [id], onDelete: Cascade)
+  kategoriId String // Kategori fasilitas.
+  kategori   Kategori         @relation(fields: [kategoriId], references: [id])
+  nama       String // Nama fasilitas, mis. "Dermaga A".
+  operator   String? // Operator/mitra (SPTP, SPMT, SPSL).
+  konstruksi String? // Jenis konstruksi.
+  objek      ObjekFasilitas[] // Objek/komponen di dalam fasilitas.
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
+
+  @@index([periodeId])
+  @@index([kategoriId])
+}
+
+// Objek/komponen fasilitas (Pelat Lantai, Bollard, Fender, dll.).
+// Menyimpan data mentah; availability dihitung di domain, bukan disimpan mentah.
+model ObjekFasilitas {
+  id                 String    @id @default(uuid())
+  fasilitasId        String
+  fasilitas          Fasilitas @relation(fields: [fasilitasId], references: [id], onDelete: Cascade)
+  nama               String // Nama objek/komponen.
+  panjang            Float? // Panjang (m).
+  lebar              Float? // Lebar (m).
+  luas               Float? // Luas (m2).
+  jumlah             Float? // Jumlah (unit).
+  fasilitasTersedia  Float // Pembagi availability.
+  rusakRingan        Float     @default(0)
+  rusakSedang        Float     @default(0)
+  rusakBerat         Float     @default(0)
+  fasilitasSiapPakai Float // Pembilang availability.
+  keterangan         String? // Catatan kerusakan/perbaikan.
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  @@index([fasilitasId])
+}
+
+// ---------------------------------------------------------------------------
+//  MODUL INSPEKSI
+// ---------------------------------------------------------------------------
+
+// Kondisi hasil inspeksi per item (mengikuti form Excel Pelindo).
+enum KondisiInspeksi {
+  BAIK // 1. Baik.
+  TIDAK_BERUBAH // 2. Tidak ada perubahan.
+  KERUSAKAN_TAMBAHAN // 3. Ada kerusakan tambahan.
+  SUDAH_DIPERBAIKI // 4. Kerusakan sudah diperbaiki.
+}
+
+// Header satu sesi inspeksi terhadap sebuah fasilitas.
+model Inspeksi {
+  id                 String         @id @default(uuid())
+  regionalNama       String // Snapshot nama regional saat inspeksi.
+  namaPelabuhan      String // Snapshot nama pelabuhan/cabang.
+  namaFasilitas      String // Fasilitas yang diinspeksi.
+  lokasiArea         String? // Lokasi/area spesifik.
+  tanggalInspeksi    DateTime // Tanggal inspeksi saat ini.
+  tanggalSebelumnya  DateTime? // Tanggal inspeksi sebelumnya (auto dari histori).
+  ttdCabangNama      String? // Nama penandatangan pihak Cabang.
+  ttdCabangNipp      String? // NIPP penandatangan Cabang.
+  ttdCabangImage     String? // URL S3 tanda tangan Cabang (base64/objek).
+  ttdMitraNama       String? // Nama penandatangan Mitra/Anak Usaha/Anpers.
+  ttdMitraNipp       String? // NIPP penandatangan Mitra.
+  ttdMitraImage      String? // URL S3 tanda tangan Mitra.
+  items              InspeksiItem[] // Detail item inspeksi.
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
+}
+
+// Detail satu item pada form inspeksi (mis. Pelat Lantai, Fender).
+model InspeksiItem {
+  id             String          @id @default(uuid())
+  inspeksiId     String
+  inspeksi       Inspeksi        @relation(fields: [inspeksiId], references: [id], onDelete: Cascade)
+  urutan         Int // Nomor urut item.
+  namaItem       String // Nama item inspeksi.
+  kondisi        KondisiInspeksi // Kondisi terpilih.
+  keterangan     String? // Keterangan tambahan.
+  fotoUrl        String? // URL foto kondisi (S3).
+
+  @@index([inspeksiId])
+}
+
+// ---------------------------------------------------------------------------
+//  USER & RBAC
+// ---------------------------------------------------------------------------
+
+// Peran pengguna mengikuti hierarki organisasi (PRD §3).
+enum Role {
+  ADMIN_PUSAT // Pemantau nasional + kelola master data & user.
+  ADMIN_REGIONAL // Pemantau + approve rekap regional.
+  PIC_CABANG // Input & submit laporan cabangnya.
+  MITRA // Validasi/tanda tangan inspeksi terkait.
+  AUDITOR // Read-only seluruh data.
+}
+
+// Akun pengguna sistem.
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique // Email/NIPP untuk login.
+  namaLengkap  String // Nama lengkap pengguna.
+  passwordHash String // Hash password (bcrypt).
+  role         Role // Peran RBAC.
+  cabangId     String? // Terisi untuk PIC_CABANG (batas akses ke cabang).
+  cabang       Cabang?  @relation(fields: [cabangId], references: [id])
+  regionalKode String? // Terisi untuk ADMIN_REGIONAL (batas akses regional).
+  aktif        Boolean  @default(true) // Status aktif akun.
+  notifikasi   Notifikasi[] // Notifikasi yang ditujukan ke pengguna ini.
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+// ---------------------------------------------------------------------------
+//  NOTIFIKASI & REMINDER
+// ---------------------------------------------------------------------------
+
+// Jenis notifikasi (untuk ikon/label di UI & dedupe reminder).
+enum JenisNotifikasi {
+  LAPORAN_SUBMITTED // Cabang mengirim laporan (untuk Regional/Pusat).
+  LAPORAN_REVIEWED // Laporan disetujui Regional (untuk PIC Cabang).
+  LAPORAN_REJECTED // Laporan ditolak Regional (untuk PIC Cabang).
+  REMINDER_LAPORAN // Pengingat mengisi/mengirim laporan bulanan (untuk PIC).
+}
+
+// Notifikasi in-app untuk seorang pengguna.
+model Notifikasi {
+  id        String          @id @default(uuid())
+  userId    String // Penerima.
+  user      User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  jenis     JenisNotifikasi // Kategori notifikasi.
+  judul     String // Judul singkat.
+  pesan     String // Isi pesan.
+  tautan    String? // Konteks navigasi (mis. "persetujuan", "dashboard").
+  dibacaAt  DateTime? // Waktu dibaca (null = belum dibaca).
+  // Kunci dedupe untuk reminder (mis. "rem-lap-2026-7"); null untuk notifikasi
+  // event biasa. Postgres menganggap NULL berbeda, jadi event tidak terdedupe.
+  kunciUnik String?
+  createdAt DateTime        @default(now())
+
+  // Cegah reminder ganda: satu (user + kunciUnik) hanya sekali.
+  @@unique([userId, kunciUnik])
+  // Percepat query "notifikasi milik user, urut terbaru, hitung belum dibaca".
+  @@index([userId, dibacaAt])
+}
+
+// ---------------------------------------------------------------------------
+//  AUDIT TRAIL (siapa mengubah apa, kapan)
+// ---------------------------------------------------------------------------
+
+// Catatan jejak audit untuk tiap aksi yang mengubah data / relevan keamanan.
+model AuditLog {
+  id         String   @id @default(uuid())
+  // --- Aktor (bisa null bila belum login, mis. gagal login) ---
+  userId     String? // ID pengguna pelaku.
+  userEmail  String? // Email pelaku (snapshot).
+  userRole   String? // Peran pelaku (snapshot).
+  // --- Aksi ---
+  aksi       String // Kode aksi, mis. "LAPORAN_SUBMIT".
+  metode     String // Metode HTTP (POST/PUT/...).
+  path       String // Path request.
+  entitas    String? // Jenis entitas terdampak, mis. "periode".
+  entitasId  String? // ID entitas terdampak.
+  status     Int? // Kode status HTTP hasil (200/201/4xx/5xx).
+  berhasil   Boolean  @default(true) // Ringkas: aksi berhasil atau gagal.
+  // --- Konteks ---
+  ip         String? // Alamat IP pelaku.
+  userAgent  String? // User-Agent perangkat.
+  detail     Json? // Rincian (body ter-redaksi / info tambahan).
+  createdAt  DateTime @default(now())
+
+  // Index untuk penelusuran audit yang umum.
+  @@index([createdAt])
+  @@index([userId])
+  @@index([entitas, entitasId])
+  @@index([aksi])
+}

@@ -1,0 +1,23 @@
+{
+  // Konfigurasi TypeScript frontend (React 19 + Vite, mode bundler).
+  "compilerOptions": {
+    "target": "ES2022", // Target JS modern.
+    "useDefineForClassFields": true, // Semantik field kelas standar.
+    "lib": ["ES2022", "DOM", "DOM.Iterable"], // API browser + JS modern.
+    "module": "ESNext", // Modul ES untuk bundler.
+    "skipLibCheck": true, // Lewati cek tipe file library.
+    "moduleResolution": "bundler", // Resolusi modul ala bundler (Vite).
+    "allowImportingTsExtensions": true, // Izinkan import .ts eksplisit.
+    "resolveJsonModule": true, // Boleh import file JSON.
+    "isolatedModules": true, // Tiap file dapat dikompilasi terpisah.
+    "noEmit": true, // Vite yang meng-emit, bukan tsc.
+    "jsx": "react-jsx", // Transformasi JSX otomatis React 17+.
+    "strict": true, // Pemeriksaan ketat.
+    "noUnusedLocals": true, // Larang variabel tak terpakai.
+    "noUnusedParameters": true, // Larang parameter tak terpakai.
+    "noFallthroughCasesInSwitch": true, // Cegah fallthrough switch tak sengaja.
+    "baseUrl": ".", // Basis path alias.
+    "paths": { "@/*": ["src/*"] } // Alias "@/..." ke src.
+  },
+  "include": ["src"] // Folder yang dicakup.
+}

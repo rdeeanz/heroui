@@ -1,0 +1,10 @@
+/* Urutan import WAJIB: Tailwind dulu, baru HeroUI (sesuai quick-start HeroUI v3). */
+@import "tailwindcss";
+@import "@heroui/styles";
+
+/* Beri tinggi penuh agar layout dashboard mengisi layar. */
+html,
+body,
+#root {
+  height: 100%;
+}

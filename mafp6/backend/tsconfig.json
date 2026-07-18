@@ -1,0 +1,22 @@
+{
+  // Konfigurasi TypeScript untuk backend NestJS.
+  "compilerOptions": {
+    "module": "commonjs", // NestJS memakai CommonJS di runtime Node.
+    "target": "ES2022", // Fitur JS modern yang didukung Node 22.
+    "moduleResolution": "node", // Cara Node mencari modul.
+    "outDir": "./dist", // Folder hasil kompilasi.
+    "rootDir": "./src", // Folder sumber TypeScript.
+    "baseUrl": "./", // Basis untuk path alias.
+    "paths": { "@/*": ["src/*"] }, // Alias "@/..." menunjuk ke src.
+    "experimentalDecorators": true, // Wajib untuk dekorator NestJS.
+    "emitDecoratorMetadata": true, // Metadata dekorator untuk dependency injection.
+    "strict": true, // Aktifkan seluruh pemeriksaan ketat TypeScript.
+    "skipLibCheck": true, // Lewati pengecekan tipe pada file .d.ts pihak ketiga.
+    "esModuleInterop": true, // Kompatibilitas import CommonJS/ESM.
+    "forceConsistentCasingInFileNames": true, // Konsistensi huruf besar/kecil nama file.
+    "declaration": false, // Tidak perlu menghasilkan file deklarasi.
+    "sourceMap": true // Peta sumber untuk debugging.
+  },
+  "include": ["src/**/*.ts"], // File yang dikompilasi (seed.ts dijalankan via tsx).
+  "exclude": ["node_modules", "dist"] // File yang diabaikan.
+}

@@ -1,0 +1,17 @@
+# Dependency
+node_modules/
+
+# Build output
+dist/
+.vite/
+
+# Env & secrets (JANGAN commit)
+.env
+*.local
+
+# Log
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
